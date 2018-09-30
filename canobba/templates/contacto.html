@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block extra_head %}
+<style>
+.input-txt{
+	padding: 8px 10px;
+	border: 1px solid #ccc;
+	color: #474747;
+	margin: 5px;
+	width: 100%;
+	font-size: 16px;
+}
+.input-txt:focus{
+	outline: none;
+	border: 1px solid #585858;
+}
+label{
+	font-size: 20px;
+	padding: 0 5px;
+	color: #525252;
+	margin-bottom: 0;
+}
+.send-form{
+	float: right;
+	padding: 5px 32px;
+	background-color: yellow;
+	color: #3C3C3C;
+	font-size: 18px;
+	border: none;
+	background-color: rgb(19,223,174);
+}
+
+.sociales-list{
+	list-style: none;
+	margin-top:30%;
+}
+.sociales-list li:first-child{
+	margin-bottom: 35px;
+}
+.sociales-list li{
+	margin: 5px ;
+}
+.sociales-list li a{
+	font-size: 22px;
+	font-weight: 600;
+	color: #777;
+}
+.sociales-list li a img{
+	height: 18px;
+	margin: 0 7px;
+}
+</style>
+{% endblock extra_head %}
+
+{% block contenido %}
+<div class="container">
+	<form action="" method="POST">{% csrf_token %}
+		<div class="row">
+			<div class="col-md-6 hidden-xs" style="text-align:center;">
+				<ul class="sociales-list">
+					<li>
+						<a href="javascript:mailto:ventas@canobba.com">ventas@canobba.com</a>
+					</li>
+					<li>
+						<a href="#"><i class="fa fa-facebook"></i>&nbsp;Canobba</a>
+					</li>
+					<li>
+						<a href="#"><i class="fa fa-twitter"></i>&nbsp;@canobba</a>
+					</li>
+					<li>
+						<a href="#"><i class="fa fa-instagram"></i>&nbsp;canobba</a>
+					</li>
+					<li>
+						<a href="#"><i class="fa fa-pinterest"></i>&nbsp;Canobba</a>
+					</li>
+				</ul>
+			</div>
+			<div class="col-md-6 col-xs-12">
+				<img class="img-responsive" src="{% static 'img/contact-img.jpg' %}" alt="canobba.com">
+			</div>
+		</div>
+		<div class="row">
+			&nbsp;
+		</div>
+		<div class="row" style="background-color: #DCDDDD;">
+			<div class="col-md-6">
+				<label for="nombre">Nombre: </label>
+				<input required class="input-txt" type="text" id="nombre" name="nombre">
+			</div>
+			<div class="col-md-6">
+				<label for="email">Email: </label>
+				<input required class="input-txt" type="email" id="email" name="email">
+			</div>
+		</div>
+		<div class="row" style="background-color: #DCDDDD;">
+			<div class="col-md-12">
+				<label for="mensaje">Mensaje: </label>
+				<textarea required class="input-txt" name="mensaje" id="mensaje" cols="30" rows="6"></textarea>
+				<input type="submit" class="send-form" value="Enviar">
+			</div>
+		</div>
+	</form>
+</div>
+{% endblock contenido %}

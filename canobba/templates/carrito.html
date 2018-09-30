@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block extra_head %}
+<style>
+	#info-envio{
+		padding: 15px 0;
+	}
+	#info-envio p{
+		font-size: 23px;
+		color: #414141;
+		margin-bottom: 2px;
+		margin-left: 25px;
+	}
+	#confirm-info-wrap{
+		display: none;
+	}
+	#opciones-pago-wrap{
+		display: none;
+	}
+	#opciones-pago-wrap ul{
+		list-style: none;
+		text-align: center;
+		padding-left: 0;
+	}
+	#opciones-pago-wrap ul li{
+		display: inline-block;
+		width:20%;
+		position: relative;
+	}
+	#opciones-pago-wrap ul li img{
+		cursor: pointer;
+		border: 3px solid #fff;
+		border-radius: 10px;
+		-webkit-transition: all .2s; /* For Safari 3.1 to 6.0 */
+    	transition: all .2s;
+	}
+	#opciones-pago-wrap ul li input[type=radio]{
+		opacity: 0;
+		position: absolute;
+	}
+	.checked-pago img{
+		border: 3px solid rgb(19,223,174) !important;
+		-webkit-transition: all .2s; /* For Safari 3.1 to 6.0 */
+    	transition: all .2s;
+	}
+	.card-form .text-input{
+		width: 95%;
+		float: left;
+	}
+	.parsley-errors-list{
+		list-style: none;
+		color: #BD3434;
+		float: left;
+	}
+	.bg-info{
+		padding: 15px;
+		margin: 15px 0;
+		font-size: 15px;
+		color: #3D3D3D;
+	}
+</style>
+{% endblock extra_head %}
+
+{% block contenido %}
+<div class="container">
+	{% if cart.items %}
+
+	<h1 class="upper gray-bottom">Su orden</h1>
+	<form action="" id="table-cart">
+		{% for cart in cart.items %}
+			<div class="row design-row">
+				<div class="col-md-2 col-sm-2 col-xs-6" style="background-color:#DCDDDD;">
+					{% if cart.product.orientacion == 'vertical' %}
+						    <img class="img-responsive" alt="{{ cart.product.producto.nombre }}" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+					{% elif car.product.orientacion == 'horizontal' %}
+						    <img class="img-responsive" alt="{{ cart.product.producto.nombre }}" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+					{% else %}
+						    <img class="img-responsive" alt="{{ cart.product.producto.nombre }}" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+					{% endif %}
+				</div>
+				<div class="col-md-2 col-sm-3 col-xs-6">
+					<h1>{{ cart.product.producto.nombre }}</h1>
+					<p>Material: {{ cart.product.material }}</p>
+					<p>Tamaño: {{ cart.product.medida }}</p>
+					<p>Orientación: {{ cart.product.orientacion|title }}</p>
+				</div>
+				<div class="col-md-8 col-sm-7 col-xs-12">
+					<div class="table-responsive" style="padding-bottom:10px">
+						<table class="table">
+							<thead>
+								<tr>
+									<th style="text-align:center;">Cantidad</th>
+									<th style="text-align:right">Precio unitario</th>
+									<th style="text-align:right">Total por articulos</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td align="center">
+										<a data-in="qty-{{ cart.product.pk }}" class="btn btn-xs btn-default dec-qty" href="#">-</a>
+										<input value="{{ cart.quantity }}" style="text-align:center;" class="form-control qty" type="text" name="qty-{{ cart.product.pk }}" id="qty-{{ cart.product.pk }}">
+										<a data-in="qty-{{ cart.product.pk }}" class="btn btn-xs btn-default inc-qty" href="#">+</a>
+									</td>
+									<td style="vertical-align: middle;font-size:20px;white-space:nowrap" align="right"><span class="money-fmt">{{ cart.price }}</span></td>
+									<td style="vertical-align: middle;font-size:20px;white-space:nowrap" align="right" class="money-fmt">{{ cart.subtotal }}</td>
+									<td style="vertical-align:middle">
+										<a data-toggle="tooltip" data-placement="top" title="Eliminar del carrito" href="{% url 'remove_session_cart' cart.product.pk %}" class="pull-right">
+											<small><i class="glyphicon glyphicon-remove" style="font-size:17px; color:#F01F1B;"></i></small>
+										</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+		<div class="col-md-offset-7 col-sm-offset-6 col-md-5 col-sm-6">
+
+		<table class="table">
+			<tr>
+				<td>Subtotal</td>
+				<th style="text-align:right" class="money-fmt">{{ subtotal }}</th>
+			</tr>
+			<tr>
+				<td>Envio gratuito</td>
+				<th style="text-align:right" class="money-fmt">$0.MXN</th>
+			</tr>
+			<!--
+			<tr>
+				<td>IVA</td>
+				<th style="text-align:right" class="money-fmt">{{ iva }}</th>
+			</tr>
+			-->
+			<tr>
+				<td>Total</td>
+				<th style="text-align:right" class="money-fmt">{{ total }}</th>
+			</tr>
+			<tr>
+				<td colspan="2" style="font-size:13px" align="right">Incluye un IVA de <span class="money-fmt">{{ iva }}</span></td>
+			</tr>
+		</table>
+
+		</div>
+		<div class="col-md-12">
+		<a class="pull-right btn-gray" style="color:#fff" href="{% url 'colecciones' %}">Quiero seguir comprando</a>
+		</div>
+	</form>
+
+	{% else %}
+		<br>
+		<div class="empty-cart-message">
+			<h3 align="center" style="margin:0;">No haz agregado ningun diseño a tu carrito.</h3>
+		</div>
+		<p align="center"><a href="{% url 'colecciones' %}" class="btn btn-primary upper">Ver colecciones</a></p>
+		<br>
+	{% endif %}
+	<div class="clear"></div>
+
+	{% if not cart.is_empty %}
+	<h1 class="gray-bottom upper">Información de Envío <small>(Datos del receptor)</small></h1>
+	<div id="wrapper-form">
+		<form method="POST" class="parsley-validation" id="datos_envio_form" action="{% url 'generar_pedido' %}">{% csrf_token %}
+			<div class="row">
+				<div class="col-md-4 col-sm-4">
+					<label for="nombre">Nombre:</label>
+					<input type="text" name="nombre" class="text-input" id="nombre" data-parsley-pattern="^[a-zA-ZáÁéÉíÍóÓúÚ ]+$" required>
+				</div>
+				<div class="col-md-4 col-sm-4">
+					<label for="apellidos">Apellidos:</label>
+					<input type="text" name="apellidos" class="text-input" id="apellidos" data-parsley-pattern="^[a-zA-ZáÁéÉíÍóÓúÚ ]+$" required>
+				</div>
+				<div class="col-md-4 col-sm-4">
+					<label for="direccion">Dirección:</label>
+					<input type="text" name="direccion" class="text-input" id="direccion" required>
+				</div>
+				<div class="col-md-4 col-sm-4">
+					<label for="direccion">No.Exterior:</label>
+					<input type="text" name="numero" class="text-input" id="numero" required>
+				</div>
+				<div class="col-md-4 col-sm-4">
+					<label for="no-interior">No.Interior:</label>
+					<input type="text" name="no_interior" class="text-input" id="no-interior" required>
+				</div>
+				<div class="col-md-4 col-sm-4">
+					<label for="colonia">Colonia:</label>
+					<input type="text" name="colonia" class="text-input" id="colonia" required>
+				</div>
+				<div class="col-md-4 col-sm-4">
+					<label for="ciudad">Ciudad:</label>
+					<input type="text" name="ciudad" class="text-input" id="ciudad" required>
+				</div>
+				<div class="col-md-4 col-sm-4">
+					<label for="estado">Estado:</label>
+					<input type="text" name="estado" class="text-input" id="estado" required>
+				</div>
+				<div class="col-md-4 col-sm-4">
+					<label for="codigo_p">CP:</label>
+					<input type="text" data-parsley-type="integer" data-parsley-length="[5,5]" name="codigo_p" class="text-input" id="codigo_p" required>
+				</div>
+				<div class="col-md-4 col-sm-4">
+					<label for="telefono">Teléfono:</label>
+					<input type="text" name="telefono" class="text-input" id="telefono" data-parsley-pattern="^([0-9\(\)\/\+ \-]*)$" required>
+				</div>
+				<div class="col-md-4 col-sm-4">
+					<label for="email">Email:</label>
+					<input type="email" name="email" class="text-input" id="email" required>
+				</div>
+				<div class="col-md-12">
+					<input type="submit" value="Enviar a esta dirección" class="pull-right btn-gray">
+				</div>
+			</div>
+		</form>
+	</div><!-- /.wrapper-form
+	{% endif %}
+
+
+		<a href="#" class="pull-right btn-gray" data-toggle="modal" data-target="#myModal">Siguiente</a>
+
+	-->
+</div>
+
+<!-- Modal Agregar al carrito -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">¡Tú pedido casi está listo!</h4>
+      </div>
+      <div class="modal-body" style="font-size:18px;">
+        Para concluir el proceso de compra debes de iniciar sesión, si no estás registrado da click en el botón registrarse
+      </div>
+      <div class="modal-footer">
+        <a id="btn-seguir" href="{% url 'registro' %}?car=1" class="btn btn-default modal-seguir">Registrarse</a>
+        <a id="btn-carrito" href="{% url 'login_form' %}?car=1" class="btn btn-primary modal-carrito">Iniciar Sesión</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock contenido %}
+
+{% block js %}
+<script src="{% static 'js/diseno.js' %}"></script>
+<script src="{% static 'js/cart.js' %}"></script>
+<script type="text/javascript" src="https://conektaapi.s3.amazonaws.com/v0.3.0/js/conekta.js"></script>
+<script>
+$(function(){
+	// $("#table-cart").animate({opacity:1}, 500)
+
+})
+</script>
+{% endblock js %}

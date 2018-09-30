@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block contenido %}
+<div class="container" style="font-size:17px">
+	<div class="row">
+		<div class="row">
+			<div>
+			<div class="col-md-6">
+				<img src="{% static 'img/logo.png' %}" class="img-responsive" alt="">
+			</div>
+			<div class="col-md-6">
+				<h1 style="border-bottom:none" class="gray-bottom upper text-right">Detalle de pedido</h1>
+				<p style="font-size: 18px;" class="upper pull-right label label-{{ pedido.get_status_css }}">Pedido #{{ pedido.folio }} - {{ pedido.fecha|date:"d/M/Y"}}</p style="font-size: 18px;">
+			</div>
+			</div>
+		</div>
+
+			<h1 style="border-bottom:2px solid rgba(231,245,30,0.8)" class="gray-bottom upper"></h1>
+
+		<div class="col-md-12">
+			<!-- Datos del comprador -->
+			<h1 class="gray-bottom upper">Datos del comprador</h1>
+			<dl class="dl-horizontal">
+			  <dt>Nombre</dt>
+			  <dd>{{ pedido.nombre|title }} {{ pedido.apellidos|title}}</dd>
+			</dl>
+
+			<!-- Datos de envio -->
+			<h1 class="gray-bottom upper">Datos de Envío <span class="pull-right caret"></span></h1>
+			<dl class="dl-horizontal">
+
+			  	<dt>Dirección</dt>
+			  	<dd>{{ pedido.direccion }}</dd>
+
+				<dt>No.Interior</dt>
+		  		<dd>{{ pedido.no_interior }}</dd>
+
+		  		<dt>No.Exterior</dt>
+		  		<dd>{{ pedido.no_exterior }}</dd>
+
+		  		<dt>Colonia</dt>
+		  		<dd>{{ pedido.colonia }}</dd>
+
+				<dt>Código Postal</dt>
+		  		<dd>{{ pedido.codigo_postal }}</dd>
+
+			  	<dt>Ciudad</dt>
+			  	<dd>{{ pedido.ciudad }}</dd>
+
+				<dt>Estado</dt>
+		  		<dd>{{ pedido.estado }}</dd>
+
+			  	<dt>Teléfono</dt>
+			  	<dd>{{ pedido.telefono }}</dd>
+
+			  	<dt>Email</dt>
+			  	<dd>{{ pedido.email }}</dd>
+			</dl>
+		</div>
+		<div class="col-md-12">
+			<h1 class="gray-bottom upper">Detalle del Pedido <span class="pull-right caret"></span></h1>
+			<table class="table">
+				<thead>
+					<tr>
+						<th width="60px">Cantidad</th>
+						<th width="60px"></th>
+						<th width="55%">Producto</th>
+						<th style="text-align:right">Precio Unitario</th>
+						<th style="text-align:right">Importe</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- Loop -->
+					{% for producto in pedido.detalles.all %}
+					<tr>
+						<td class="text-center">{{ producto.cantidad }}</td>
+						<td>
+								<img src="{{ im.url }}" alt="">
+						</td>
+						<td>
+							<p style="margin:0">{{ producto.producto.producto.nombre }}</p>
+							<p style="margin:0">{{ producto.producto.material }}</p>
+							<p style="margin:0">{{ producto.producto.medida }}</p>
+							<p style="margin:0">{{ producto.producto.orientacion }}</p>
+						</td>
+						<td align="right" class="money-fmt">{{ producto.producto.precio }}</td>
+						<td align="right" class="money-fmt">{{ producto.get_total }}</td>
+					</tr>
+					{% endfor %}
+					<!-- Loop -->
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6" style="padding-bottom:20px">
+			<h2 class="gray-bottom upper">Forma de Pago</h2>
+
+			<div class="form-horizontal">
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="">Status</label>
+					<div class="col-sm-10">
+						<h4 style="diplay:inline"><div class="label label-{{ pedido.get_status_css }}">{{ pedido.get_status_display }}</div></h4>
+					</div>
+				</div>
+
+				{% if pedido.status == 1 %}
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="">Plataforma</label>
+						<div class="col-sm-10">
+							<h4 style="diplay:inline"><div class="label label-info">{{ pedido.get_forma_pago }}</div></h4>
+						</div>
+					</div>
+				{% else %}
+
+					{% if pedido.status != 2 %}
+
+					<div class="form-group">
+						<div class="col-sm-10">
+							<input checked="" class="formas-pago" id="pago-1" type="radio" name="f-pago" value="paypal">
+							<label style="cursor:pointer" for="pago-1"><img style="width:75px;" src="{% static 'img/FDP-03.jpg' %}" alt=""></label>
+							<input class="formas-pago" id="pago-2" type="radio" name="f-pago" value="conekta">
+							<label style="cursor:pointer" for="pago-2"><img style="width:75px;" src="{% static 'img/FDP-01.jpg' %}" alt=""></label>
+							<input class="formas-pago" id="pago-3" type="radio" name="f-pago" value="conekta">
+							<label style="cursor:pointer" for="pago-3"><img style="width:75px;" src="{% static 'img/FDP-02.jpg' %}" alt=""></label>
+							<input class="formas-pago" id="pago-4" type="radio" name="f-pago" value="deposito">
+							<label style="cursor:pointer" for="pago-4"><img style="width:75px;" src="{% static 'img/FDP-04-01.jpg' %}" alt=""></label>
+						</div>
+					</div><!-- end form-group -->
+
+						<!-- paypal button pedido.get_total-->
+						<div class="pull-right" id="paypal-box">
+							<script async="async" src="https://www.paypalobjects.com/js/external/paypal-button.min.js?merchant=adda@canobba.com"
+							    data-button="buynow"
+							    data-name="Pago a Canobba Fotolienzo, folio #{{ pedido.folio }}"
+							    data-quantity="1"
+							    data-amount="{{ pedido.get_total }}"
+							    data-currency="MXN"
+							    data-shipping="0"
+							    data-tax="0"
+							    data-callback="http://canobba.com/paypal_return/{{ pedido.id }}/"
+							    data-return="http://canobba.com/paypal_return/{{ pedido.id }}/"
+							></script>
+						</div>
+						<!-- end paypal button-->
+
+						<div class="clearfix"></div>
+
+						<!-- form conekta -->
+						<div class="form-horizontal">
+							<form action="" method="POST" id="card-form">
+								<h4 align="center">Información de tarjeta</h4>
+								{% csrf_token %}
+								<span class="card-errors text-danger"></span>
+
+								<div class="form-group">
+									<input placeholder="Nombre del tarjetahabiente" class="form-control" type="text" size="20" data-conekta="card[name]"/>
+								</div>
+								<div class="form-group">
+									<div class="col-md-3 no-padding">
+										<input id="card-number" placeholder="Número de tarjeta" class="form-control" type="text" size="20" data-conekta="card[number]"/>
+									</div>
+									<div class="col-md-2 ">
+										<input id="card-cvc" placeholder="CVC" class="form-control" type="text" size="4" data-conekta="card[cvc]"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<p>Fecha de expiración</p>
+									<div class="col-md-3 no-padding">
+										<input style="width:90%" placeholder="MM" class="form-control" type="text" size="2" data-conekta="card[exp_month]"/>
+									</div>
+									<div class="col-md-3">
+										<input style="width:90%" placeholder="AAAA" class="form-control" type="text" size="4" data-conekta="card[exp_year]"/>
+									</div>
+								</div>
+								<button class="btn btn-primary pull-right" type="submit">Pagar</button>
+
+								<div class="clearfix"></div>
+							</form>
+						</div>
+
+						<!-- end form conekta -->
+						<div class="clearfix"></div>
+
+						<!-- Deposito -->
+						<div id="deposito-div">
+							<a href="{% url 'deposito' pedido.id %}" class="btn btn-primary pull-right">Ver Información de Depósito</a>
+						</div>
+						<!-- end Deposito -->
+					{% endif %}
+
+				{% endif %}
+			</div><!-- end form-horizontal -->
+		</div><!-- end col-md-6  -->
+
+		<div class="col-md-2"></div>
+		<div class="col-md-4">
+			<table class="totalizacion">
+				<tr>
+					<td class="upper">Subtotal</td>
+					<td class="money-fmt">{{ pedido.get_total_siniva }}</td>
+				</tr>
+				<tr class="bottom-border">
+					<td class="upper">+ Envío</td>
+					<td class="money-fmt">0</td>
+				</tr>
+				<tr class="bottom-border">
+					<td class="upper">+ Impuesto</td>
+					<td class="money-fmt">{{ pedido.get_iva }}</td>
+				</tr>
+				<tr class="bottom-border">
+					<td class="upper subt">Total</td>
+					<td class="upper subt money-fmt">{{ pedido.get_total }}</td>
+				</tr>
+			</table>
+			<dl class="dl-horizontal totalizacion">
+
+			</dl>
+		</div>
+	</div>
+</div>
+<div class="clearfix"></div>
+{% endblock contenido %}
+
+{% block js %}
+	<script type="text/javascript" src="https://conektaapi.s3.amazonaws.com/v0.3.2/js/conekta.js"></script>
+	<script type="text/javascript" src="{% static 'js/jquery.payment.js' %}"></script>
+
+	<script type="text/javascript">
+		// Conekta Public Key
+		Conekta.setPublishableKey('key_WyjC6eNGqy4N4asYWzrqv5w');
+		//Conekta.setPublishableKey('key_OgmqasAxacRmg7HyHtqCRJg');
+		// ...
+		jQuery(function($) {
+			$("#card-number").payment('formatCardNumber');
+			$("#card-cvc").payment('formatCardCVC');
+			$("#card-form").submit(function(event) {
+				var $form;
+				$form = $(this);
+
+				/* Previene hacer submit más de una vez */
+				$form.find("button").prop("disabled", true);
+				Conekta.token.create($form, conektaSuccessResponseHandler, conektaErrorResponseHandler);
+
+				/* Previene que la información de la forma sea enviada al servidor */
+				return false;
+			});
+		});
+
+		var conektaSuccessResponseHandler;
+		conektaSuccessResponseHandler = function(token) {
+			var $form;
+			$form = $("#card-form");
+
+			/* Inserta el token_id en la forma para que se envíe al servidor */
+			$form.append($("<input type=\"hidden\" name=\"conektaTokenId\" />").val(token.id));
+
+			/* and submit */
+			$form.get(0).submit();
+		};
+
+		var conektaErrorResponseHandler;
+		conektaErrorResponseHandler = function(response) {
+			var $form;
+			$form = $("#card-form");
+
+			/* Muestra los errores en la forma */
+			$form.find(".card-errors").text(response.message);
+			$form.find("button").prop("disabled", false);
+		};
+	</script>
+
+	<script>
+		$(window).load(function(){
+			v= $(".paypal-button")[1];
+			$(v).text("Comprar Ahora");
+		});
+		$(function(){
+
+			$("#card-form").hide();
+			$("#deposito-div").hide();
+			{% if pedido.status == 1 %}
+				$("#paypal-box").hide();
+			{% endif %}
+			$(".formas-pago").change(function(){
+				if ( $(this).val() == "paypal" ) {
+					$("#card-form").slideUp("fast");
+					$("#paypal-box").slideDown("fast");
+					$("#deposito-div").slideUp("fast");
+				}else if( $(this).val() == "conekta" ){
+					$("#card-form").slideDown("fast");
+					$("#paypal-box").slideUp("fast");
+					$("#deposito-div").slideUp("fast");
+				}
+				else{
+					$("#card-form").slideUp("fast");
+					$("#paypal-box").slideUp("fast");
+					$("#deposito-div").slideDown("fast");
+				}
+			});
+		});
+
+	</script>
+{% endblock js %}

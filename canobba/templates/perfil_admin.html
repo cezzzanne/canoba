@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block extra_head %}
+
+<!-- Grid plugin -->
+<link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/component.css' %}" />
+
+<!-- Carousel -->
+<link rel="stylesheet" href="{% static 'css/carousel.css' %}">
+{% endblock extra_head %}
+
+{% block contenido %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h3>Administrar Perfil del diseñador</h3>
+			</div>
+		</div>
+		<form action="{% url 'actualizar' disenador.profile_url %}" method="POST" enctype="multipart/form-data">
+			{% csrf_token %}
+			<div class="gray-box-content">
+				<div class="row">
+					<div class="col-md-3 col-sm-6" style="box-shadow:-1px 0 0 #ccc">
+						<div class="profile-pic">
+							<img style="max-height:250px;" src="{{ disenador.imagen.url }}" class="img-responsive" alt="">
+						</div>
+						<div class="change-profile-pic">
+							<input id="img-file" type="file" name="imagen" style="opacity: 0; position: absolute;">
+							Cambiar Imagen
+						</div>
+					</div>
+					<div class="col-md-3 col-sm-6" style="box-shadow:-1px 0 0 #ccc">
+						<div style="display: table; height: 250px; overflow: hidden;">
+					    	<div style="display: table-cell; vertical-align: middle;">
+					    		Nombre:
+					    		<input name="nombre" style="margin-bottom:4px" type="text" class="form-control" value="{{ disenador.nombre }}">
+					    		Apellidos:
+								<input name="apellidos" type="text" class="form-control" value="{{ disenador.apellidos }}"> <br>
+								Ciudad:
+								<input name="municipio" style="margin-bottom:4px" type="text" class="form-control" value="{{ disenador.municipio }}">
+								Estado:
+								<input name="estado" style="margin-bottom:4px" type="text" class="form-control" value="{{ disenador.estado }}">
+					    	</div>
+					    </div>
+					</div>
+					<div class="col-md-3 col-sm-6" style="box-shadow:-1px 0 0 #ccc">
+						<div style="display: table; height: 250px; overflow: hidden;width:100%;">
+					    	<div style="display: table-cell; vertical-align: middle;">
+								Biografía:
+					    		<textarea name="biografia" style="height:200px;resize:none" class="form-control">{{ disenador.biografia }}</textarea>
+					    	</div>
+					    </div>
+					</div>
+					<div class="col-md-3 col-sm-6">
+						<div style="display: table; height: 250px; overflow: hidden;width:100%;">
+					    	<div style="display: table-cell; vertical-align: middle;">
+					    		<div class="text-center">
+						    		<h2 class="nomargin nopadding"><a href="{% url 'following' disenador.profile_url %}">Following</a></h2>
+						    		<h2 class="nomargin">{{ disenador.get_following }}</h2>
+						    		<h2 class="nomargin nopadding"><a href="{% url 'followers' disenador.profile_url %}">Followers</a></h2>
+						    		<h2 class="nomargin">{{ disenador.get_followers }}</h2>
+						    		<hr>
+						    		<h3 class="nomargin nopadding" data-toggle="tooltip" data-placement="top" title="{{ disenador.ratings.count }} votos">Rating</h3>
+						    		<ul class="list-inline rating-list nomargin nopadding">
+						    			{% for i in "xxxxx" %}
+						    				{% if disenador.get_rating >= forloop.counter %}
+						    					<li><a href="{% url 'votar' disenador.profile_url forloop.counter %}"><i class="glyphicon glyphicon-star"></i></a></li>
+						    				{% else %}
+						    					<li><a href="{% url 'votar' disenador.profile_url forloop.counter %}"><i class="glyphicon glyphicon-star-empty"></i></a></li>
+						    				{% endif %}
+						    			{% endfor %}
+						    		</ul>
+					    		</div>
+					    	</div>
+					    </div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<p align="right">
+							<a href="{% url 'subir_diseno' disenador.profile_url %}" class="btn btn-default">Subir un diseño</a>
+							<a href="{% url 'ver_perfil' disenador.profile_url %}?pub=1" class="btn btn-default">Ver Perfil Público</a>
+							<input type="submit" value="Guardar Cambios" class="btn btn-default">
+						</p>
+					</div>
+				</div>
+			</div>
+		</form>
+		<div class="row">
+			<div class="col-md-12">
+
+				<ul class="pagination pull-right">
+			        {% if disenos.has_previous %}
+						<li><a href="?page={{ disenos.previous_page_number }}">&laquo;</a></li>
+					{% endif %}
+
+			        {% for page in disenos.paginator.page_range %}
+						<li {% if page ==  disenos.number %}class="active"{% endif %}><a href="?page={{ page }}">{{ page }}</a></li>
+			        {% endfor %}
+
+			        {% if disenos.has_next %}
+			        	<li><a href="?page={{ disenos.next_page_number }}">&raquo;</a></li>
+			        {% endif %}
+			    </ul>
+			</div>
+		</div>
+		<h1>Diseños</h1>
+		<div class="row">
+			<table class="disenos-table" width="100%">
+				<thead>
+					<tr>
+						<th>Imagen</th>
+						<th width="60%">Detalles</th>
+						<th>Medidas</th>
+						<th>Material</th>
+						<th>Opciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for diseno in disenos %}
+						<tr>
+							<td>
+									<img src="{{ im.url }}" class="img-responsive" alt="">
+							</td>
+							<td>
+								<p class="text-left">
+									<b>Nombre</b> <br>
+									{{ diseno.nombre }} <br>
+									<b>Descripción</b> <br>
+									{{ diseno.descripcion|striptags }} <br>
+									<b>Etiquetas</b> <br>
+									{% for tag in diseno.tags.all %}
+										{{ tag }}{% if not forloop.last %},{% endif %}
+									{% endfor %}
+
+								</p>
+							</td>
+							<td>
+								{% for medida in diseno.imagenes.all %}
+									{{ medida.get_medida_display }} <br>
+								{% endfor %}
+							</td>
+							<td>
+								Texturizado <br>
+								Canvas <br>
+								Vinipiel
+							</td>
+							<td>
+								<ul class="list-inline">
+									{% if diseno.eliminado %}
+										<li><span class="text-danger">ELIMINADO</span></li>
+									{% else %}
+										<li data-toggle="tooltip" data-placement="top" title="Editar"><a href="{% url 'subir_diseno' disenador.profile_url diseno.id %}"><i class="glyphicon glyphicon-pencil"></i></a></li>
+									<li data-toggle="tooltip" data-placement="top" title="Ver"><a href="{% url 'diseno' diseno.slug %}"><i class="glyphicon glyphicon-search"></i></a></li>
+										<li data-toggle="tooltip" data-placement="top" title="Eliminar"><a href="{% url 'eliminar_diseno' diseno.id disenador.profile_url %}"><i class="glyphicon glyphicon-remove-circle"></i></a></li>
+									{% endif %}
+								</ul>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+{% endblock contenido %}
+
+{% block js %}
+	<script>
+		$(document).ready(function(){
+			$("#img-file").change(function(){
+
+				input = $(this)[0];
+				console.log(input);
+				if (input.files && input.files[0]) {
+					// validamos que sea una imagen
+					if(input.files[0].type.split("/")[0] != "image")
+					{
+						$(this).val("");
+						alert("Archivo inválido");
+						return null;
+					}
+					var reader = new FileReader();
+					reader.onload = function(e){
+						//console.log(e.target.result);
+						//alert("dskfjl")
+					}
+				}
+			});
+		});
+	</script>
+{% endblock js %}

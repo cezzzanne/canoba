@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block extra_head %}
+
+<!-- Grid plugin -->
+<link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/component.css' %}" />
+
+<!-- Carousel -->
+<link rel="stylesheet" href="{% static 'css/carousel.css' %}">
+<style>
+#main-menu-collapse{
+	background-color: #F1F1F1 !important;
+}
+
+	.carousel-control{
+		opacity: 0;
+	}
+
+	#carousel-example-generic:hover .carousel-control{
+		opacity: 1;
+	}
+
+	.carousel-indicators li{
+		width: 8px;
+		height: 8px;
+	}
+
+	.carousel-indicators .active{
+		width: 10px;
+		height: 10px;
+	}
+</style>
+{% endblock extra_head %}
+
+{% block submenu %}
+<div class="sub-menu gray-main-bg">
+	<ul>
+		{% for col in colecciones %}
+			<li {% if col == coleccion %}class="active-sub"{% endif %}><a href="{% url 'coleccion' col.slug %}"><span>{{ col.nombre|title }}</span></a></li>
+		{% endfor %}
+	</ul>
+</div>
+{% endblock submenu %}
+
+{% block slider %}
+<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+  <!-- Indicators -->
+  <ol class="carousel-indicators">
+  	{% for slide in slider.imagenes.all %}
+    	<li data-target="#carousel-example-generic" data-slide-to="{{ forloop.counter0 }}" {% if forloop.counter == 1 %}class="active"{% endif %}></li>
+	{% endfor %}
+  </ol>
+
+{% if slider %}
+
+  <!-- Wrapper for slides -->
+  <div class="carousel-inner">
+
+	{% for slide in slider.imagenes.all %}
+	    <div class="item {% if forloop.counter == 1 %}active{% endif %}">
+	      <img src="{{ slide.imagen.url|default:'http://placehold.it/1143x400' }}" class="img-responsive" alt="{{ slide.slider.nombre }}">
+	      {% if slide.texto %}
+	      <div class="carousel-caption">
+	      	<h1>{{ slide.texto }}</h1>
+	      </div>
+	      {% endif %}
+	    </div>
+	{% endfor %}
+
+  </div>
+
+{% endif %}
+
+  <!-- Controls -->
+  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+    <img style="height:40px" src="{% static 'img/prev.png' %}" alt="">
+  </a>
+  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+    <img style="height:40px" src="{% static 'img/next.png' %}" alt="">
+  </a>
+  </div>
+</div>
+
+{% endblock slider %}
+
+
+{% block contenido %}
+<div class="container">
+
+		{% for tag in tags %}
+			<a href="{% url 'tag' tag.slug %}">{{ tag.palabra }}</a>
+		{% endfor %}
+
+		<div class="row">
+			<div class="col-md-12">
+				<ul class="grid swipe-down" id="grid">
+					{% for coleccion in colecciones %}
+						<li class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
+							<a href="{% url 'coleccion' coleccion.slug %}">
+
+							{% if coleccion.imagen %}
+
+								<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ coleccion.nombre }}">
+
+							{% else %}
+								<img src="http://placehold.it/300x350"  alt="Imagen no disponible">
+							{% endif %}
+								<h3>{{ coleccion.nombre|title }}</h3>
+							</a>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+{% endblock contenido %}
+
+{% block js %}
+<script>
+new GridScrollFx( document.getElementById( 'grid' ), {
+	viewportFactor : 0.4
+} );
+</script>
+{% endblock js %}

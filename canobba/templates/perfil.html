@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block extra_head %}
+
+<!-- Grid plugin -->
+<link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/component.css' %}" />
+<style>
+	.circle-avatar{
+		/* make it responsive */
+		display:block;
+		/* make it a circle */
+		border-radius:50%;
+		padding-top: 10px;
+		/* Centering on image`s center*/
+		background-position-y: center;
+		background-position-x: center;
+		background-repeat: no-repeat;
+		/* it makes the clue thing, takes smaller dimension to fill div */
+		background-size: cover;
+	}
+	.container-followings,.container-followers{
+		display: inline-flex;
+	}
+	.container-followings h5,.container-followers h5{
+		color:#575757;
+		font-weight: bold;
+	}
+	.container-followings span,.container-followers span{
+		padding-left: 10px;
+		color:#575757;
+		font-weight: bold;
+	}
+	.submenu{
+		text-decoration: none;
+    	list-style: none;
+    	display: flex;
+    	min-width: 100%;
+		margin-top: 50px;
+	}
+	.submenu li{
+    	padding: 10px 10px 10px 10px;
+    	margin-left: 25px;
+	}
+	.submenu li:hover,.submenu li.active{
+		background: #f6f6f6;
+		color: #4d4d4d;
+		font-weight: bold;
+		border-radius: 15px;
+	}
+	.submenu li a{
+		margin: 0 10px;
+		padding: 0 10px;
+		text-align: center;
+		text-decoration: none;
+		font-size: 16px;
+	}
+</style>
+<!-- Carousel -->
+<link rel="stylesheet" href="{% static 'css/carousel.css' %}">
+{% endblock extra_head %}
+
+{% block contenido %}
+<div class="container">
+	<div class="row" style="margin-top: 20px;">
+		<div class="col-md-12">
+			<div class="col-md-2">
+					<img src="{{ im.url }}" class="img-responsive circle-avatar" alt="">
+			</div>
+			<div class="col-md-3">
+				<h2 style="color: #575757;font-weight: bold;">{{ disenador.nombre }}&nbsp;{{ disenador.apellidos }}</h2>
+				<div class="container-followers">
+					<h5 class="nomargin">{{ disenador.get_followers }}</h5> <span>Seguidores</span>
+				</div>
+				<br>
+				<div class="container-followings">
+					<h5 class="nomargin nopadding">{{ disenador.get_following }}</h5> <span>Siguiendo</span>
+				</div>
+			</div>
+			<div class="col-md-7">
+				<ul class="submenu">
+					<li><a href="javascript:void(0)" onclick="openBiografia" data-toggle="modal" data-target="#myModal">Mi Perfil</a></li>
+					<li {% if disenador.profile_url in request.path %} class="active" {% else %} class="" {% endif %}><a href="#">Mis Diseños ({{count_disenos}})</a></li>
+					<li><a href="{% url 'ver_favoritos' disenador.profile_url %}">Mis Favoritos ({{favoritos}})</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!--<div class="row">
+		<div class="col-md-12">
+			<h3>Perfil del diseñador</h3>
+		</div>
+	</div>-->
+	<!--<div class="gray-box-content">
+		<div class="row">
+			<div class="col-md-3 col-sm-6" style="border-right:1px solid #ccc">
+				<div class="profile-pic">
+					<img style="max-height:250px;" src="{{ disenador.imagen.url }}" class="img-responsive" alt="">
+				</div>
+			</div>
+			<div class="col-md-3 col-sm-6" style="border-right:1px solid #ccc">
+				<div style="display: table; height: 250px; overflow: hidden;">
+					<div style="display: table-cell; vertical-align: middle;">
+						<h3 class="nomargin">{{ disenador.nombre }} <br>
+						{{ disenador.apellidos }}</h3>
+						<h4>{{ disenador.municipio|default:"Ciudad no capturada" }}, {{ disenador.estado }}</h4>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-3 col-sm-6" style="border-right:1px solid #ccc">
+				<div style="display: table; height: 250px; overflow: hidden;">
+					<div style="display: table-cell; vertical-align: middle;">
+						<p>
+							{{ disenador.biografia }}
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-3 col-sm-6">
+				<div style="display: table; height: 250px; overflow: hidden;width:100%;">
+					<div style="display: table-cell; vertical-align: middle;">
+						<div class="text-center">
+							<h2 class="nomargin nopadding"><a href="{% url 'following' disenador.profile_url %}">Following</a></h2>
+							<h2 class="nomargin">{{ disenador.get_following }}</h2>
+							<h2 class="nomargin nopadding"><a href="{% url 'followers' disenador.profile_url %}">Followers</a></h2>
+							<h2 class="nomargin">{{ disenador.get_followers }}</h2>
+							<hr>
+							<h3 class="nomargin nopadding" data-toggle="tooltip" data-placement="top" title="{{ disenador.ratings.count }} votos">Rating</h3>
+							<ul class="list-inline rating-list nomargin nopadding">
+								{% for i in "xxxxx" %}
+									{% if disenador.get_rating >= forloop.counter %}
+										<li><a href="{% url 'votar' disenador.profile_url forloop.counter %}"><i class="glyphicon glyphicon-star"></i></a></li>
+									{% else %}
+										<li><a href="{% url 'votar' disenador.profile_url forloop.counter %}"><i class="glyphicon glyphicon-star-empty"></i></a></li>
+									{% endif %}
+								{% endfor %}
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<p align="right">
+					<a href="{% url 'follow' disenador.profile_url %}" class="btn btn-default">Follow</a>
+				</p>
+			</div>
+		</div>
+	</div>-->
+
+	<div class="row">
+		<div class="col-md-12">
+
+			<ul class="pagination pull-right">
+				{% if disenos.has_previous %}
+					<li><a href="?page={{ disenos.previous_page_number }}">&laquo;</a></li>
+				{% endif %}
+
+				{% for page in disenos.paginator.page_range %}
+					<li {% if page ==  disenos.number %}class="active"{% endif %}><a href="?page={{ page }}">{{ page }}</a></li>
+				{% endfor %}
+
+				{% if disenos.has_next %}
+					<li><a href="?page={{ disenos.next_page_number }}">&raquo;</a></li>
+				{% endif %}
+			</ul>
+
+		</div>
+	</div>
+	<div class="row" style="margin-top: 20px;">
+		{% for diseno in disenos %}
+			{% if not diseno.eliminado %}
+				<div class="col-md-3 col-sm-4 design-bx">
+					<a class="link-design" href="{% url 'diseno' diseno.slug %}">
+								<img class="img-responsive" src="{{ im.url }}">
+						<div class="view-prod">
+							<div class="view-design">Ver</div>
+						</div>
+					<h3 class="diseno-name-link">{{ diseno.nombre }}</h3>
+					</a>
+				</div>
+			{% endif %}
+		{% endfor %}
+	</div>
+</div>
+<script>
+	function openBiografia(){
+		$('#myModal').modal();
+	}
+</script>
+{% endblock contenido %}

@@ -1,0 +1,139 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<title>Diario Canobba</title>
+	<link rel="shortcut icon" href="{% static 'img/favicon.png' %}" type="image/x-icon">
+	<link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon">
+	<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
+	<link rel="stylesheet" href="{% static 'css/base.css' %}">
+	<script src="{% static 'js/jquery-1.11.1.min.js' %}"></script>
+	<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/functions.js' %}"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+	<style>
+	.bg-black{
+		background-color: #2D2D2D;
+	}
+	.categorias-wrap{
+		background-color: #F7F7F7;
+		padding: 15px 10px;
+	}
+	.links-socials{
+		list-style: none;
+		text-align: center;
+		padding-left: 0;
+	}
+	.links-socials li{
+		display: inline-block;
+		margin: 0 5px;
+	}
+
+	.input-txt{
+		padding: 8px 10px;
+		border: 1px solid #ccc;
+		color: #474747;
+		margin: 5px;
+		width: 98%;
+		font-size: 16px;
+	}
+	.input-txt:focus{
+		outline: none;
+		border: 1px solid #585858;
+	}
+	.nav > li > a:hover, .nav > li > a:focus{
+		background-color: transparent !important;
+	}
+	.entrada-wrap{
+		padding: 15px 0;
+		border-bottom: 1px dashed #ccc;
+
+	}
+	.fecha-entrada{
+		font-size: 16px;
+		margin-top: 5px;
+		color: #6B6B6B;
+	}
+	.titulo-entrada{
+		font-family: 'Oswald', sans-serif;
+		color: #4D4D4D;
+	}
+	.descripcion-entrada{
+		font-size: 18px;
+		color: #414141;
+	}
+	.entradas-recientes h1{
+		font-family: 'Oswald', sans-serif;
+		font-size: 25px;
+		color: rgb(19,223,174);
+	}
+	</style>
+	{% block extra_head %}
+	{% endblock extra_head %}
+</head>
+<body>
+	<header class="bg-black">
+		<div class="container">
+		  <div class="navbar">
+		  <ul class="nav nav-justified" id="myNav">
+		    <li><a href="{% url 'home' %}"><img src="{% static 'img/logo-diario.png' %}" alt="canobba.com"></a></li>
+		  </ul>
+		  </div>
+		</div>
+	</header> <!-- /.header -->
+<br />
+<div class="container">
+	<div class="row">
+		<div class="col-md-3">
+			<div class="categorias-wrap">
+				<ul class="links-socials">
+					<li>
+						<a href="#" target="_blank">
+							<img src="{% static 'img/fb-b.png' %}" alt="">
+						</a>
+					</li>
+					<li>
+						<a href="#" target="_blank">
+							<img src="{% static 'img/tw-b.png' %}" alt="">
+						</a>
+					</li>
+					<li>
+						<a href="#" target="_blank">
+							<img src="{% static 'img/in-b.png' %}" alt="">
+						</a>
+					</li>
+					<li>
+						<a href="#" target="_blank">
+							<img src="{% static 'img/pi-b.png' %}" alt="">
+						</a>
+					</li>
+				</ul>
+				<div class="search-box">
+					<form action="{% url 'buscar_entrada' %}">
+						<input name="q" placeholder="Buscar" type="text" class="input-txt">
+					</form>
+				</div><!-- /.search-box -->
+				<div class="entradas-recientes">
+					<h1>Entradas recientes</h1>
+					<ul>
+						{% for categoria in categorias %}
+							<li><a href="{% url 'categoria' categoria.slug %}">{{ categoria.nombre }}</a></li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div><!-- /.categorias-wrap -->
+		</div>
+
+		<div class="col-md-9">
+			{% block contenido %}
+
+			{% endblock contenido %}
+		</div>
+	</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block extra_head %}
+	<style>
+		.file-preview {
+			width: 100px;
+			height: 100px;
+			background-size: cover;
+			background-repeat: no-repeat;
+			border: 1px solid #ccc;
+			border-radius: 3px;
+			background-position: center;
+		}
+	</style>
+{% endblock extra_head %}
+
+{% block contenido %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-offset-3 col-md-6">
+			<h1 align="center" class="upper">Registrate</h1>
+			<div role="tabpanel">
+
+			  <!-- Nav tabs -->
+			  <ul class="nav nav-tabs" role="tablist">
+			    <li role="presentation" class="upper active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Quiero Comprar</a></li>
+			    <li role="presentation" class="upper"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Quiero Publicar</a></li>
+			  </ul>
+
+			  <!-- Tab panes -->
+			  <div class="tab-content">
+			    <div role="tabpanel" class="tab-pane fade in active" id="home">
+			    	<form class="parsley-validation" action="{% url 'registro' %}?tipo=cliente" method="POST">{% csrf_token %}
+			    		<h3 align="center">Datos de Acceso</h3>
+						<div class="form-group">
+							<label>Email</label>
+							<input type="email" class="form-control" name="email" required>
+						</div>
+						<div class="form-group">
+							<label>Contraseña</label>
+							<input id="pass-cli" type="password" class="form-control" name="pass" required>
+						</div>
+						<div class="form-group">
+							<label>Confirmar Contraseña</label>
+							<input type="password" class="form-control" name="cpass" required data-parsley-equalto="#pass-cli">
+						</div>
+						<hr>
+
+						<div class="form-group">
+							<label>Nombre</label>
+							<input type="text" class="form-control" name="nombre" required data-parsley-pattern="/^[a-zA-Z]+$/">
+						</div>
+						<div class="form-group">
+							<label>Apellidos</label>
+							<input type="text" class="form-control" name="apellidos" required data-parsley-pattern="/^[a-zA-Z]+$/">
+						</div>
+						<hr>
+						<!--
+						<h3 align="center">Datos de Facturación</h3>
+						<div class="form-group">
+							<label>*Razón Social</label>
+							<input type="text" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>*RFC</label>
+							<input type="text" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>*Calle</label>
+							<input type="text" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>*No. Exterior</label>
+							<input type="text" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>Código postal</label>
+							<input type="text" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>Colonia</label>
+							<input type="text" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>Localidad</label>
+							<input type="text" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>Municipio</label>
+							<input type="text" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>Estado</label>
+							<input type="text" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>Teléfono</label>
+							<input type="text" class="form-control">
+						</div>
+						-->
+						<div class="form-group">
+							<input name=""class="btn btn-primary pull-right" type="submit" value="Registrarme">
+						</div>
+						<div class="clearfix"></div>
+					</form>
+			    </div><!-- end content tab comprador-->
+
+
+			    <div role="tabpanel" class="tab-pane fade" id="profile">
+			    	<form class="parsley-validation" action="{% url 'registro' %}?tipo=artista" method="POST" enctype="multipart/form-data">
+			    		{% csrf_token %}
+			    		<h3 align="center">Datos de Acceso</h3>
+						<div class="form-group">
+							<label>Email</label>
+							<input type="email" class="form-control" name="email" required>
+						</div>
+						<div class="form-group">
+							<label>Contraseña</label>
+							<input id="pass-dis" type="password" class="form-control" name="pass" required>
+						</div>
+						<div class="form-group">
+							<label>Confirmar Contraseña</label>
+							<input type="password" class="form-control" name="cpass" required data-parsley-equalto="#pass-dis">
+						</div>
+						<hr>
+						<div class="form-group">
+							<label>Profile Personal URL</label>
+							<input id="profileurl" type="text" class="form-control" name="profile_url" required>
+						</div>
+						<div class="form-group">
+							<label>Nombre</label>
+							<input type="text" class="form-control" name="nombre" required data-parsley-pattern="/^[ñáéíóúÁÉÍÓÚÜüA-Za-z _]*[áéíóúÁÉÍÓÚÜüñA-Za-z][áéíóúÁÉÍÓÚÜüñA-Za-z _]+$/">
+						</div>
+						<div class="form-group">
+							<label>Apellidos</label>
+							<input type="text" class="form-control" name="apellidos" required data-parsley-pattern="/^[ñáéíóúÁÉÍÓÚÜüA-Za-z _]*[áéíóúÁÉÍÓÚÜüñA-Za-z][áéíóúÁÉÍÓÚÜüñA-Za-z _]+$/">
+						</div>
+						<div class="form-group">
+							<label>Imagen</label>
+							<input type="file" accept="image/*" name="imagen" required>
+							<div class="file-preview"></div>
+						</div>
+						<div class="form-group">
+							<label>Ciudad</label>
+							<input type="text" class="form-control" name="u-ciudad" required data-parsley-pattern="/^[ñáéíóúÁÉÍÓÚÜüA-Za-z _]*[ñáéíóúÁÉÍÓÚÜüA-Za-z][ñáéíóúÁÉÍÓÚÜüA-Za-z _]+$/">
+						</div>
+						<div class="form-group">
+							<label>Estado</label>
+							<input type="text" class="form-control" name="u-estado" required data-parsley-pattern="/^[ñáéíóúÁÉÍÓÚÜüA-Za-z _]*[ñáéíóúÁÉÍÓÚÜüA-Za-z][ñáéíóúÁÉÍÓÚÜüA-Za-z _]+$/">
+						</div>
+						<div class="form-group">
+							<label>Biografia</label>
+							<textarea class="form-control" name="biografia"></textarea>
+						</div>
+						<div class="form-group">
+							<label>Descripción de su trabajo</label>
+							<textarea class="form-control" name="descripcion"></textarea>
+						</div>
+						<div class="form-group">
+							<label>Técnicas</label>
+							<textarea class="form-control" name="tecnicas"></textarea>
+						</div>
+						<hr>
+						<!--
+						<h3 align="center">Datos de Facturación</h3>
+						<div class="form-group">
+							<label>Razón Social</label>
+							<input type="text" class="form-control" required>
+						</div>
+						<div class="form-group">
+							<label>RFC</label>
+							<input type="text" class="form-control" required>
+						</div>
+						<div class="form-group">
+							<label>*Calle</label>
+							<input type="text" class="form-control" required>
+						</div>
+						<div class="form-group">
+							<label>*No. Exterior</label>
+							<input type="text" class="form-control" required>
+						</div>
+						<div class="form-group">
+							<label>Código postal</label>
+							<input type="text" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>Colonia</label>
+							<input type="text" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>Localidad</label>
+							<input type="text" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>Municipio</label>
+							<input type="text" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>Estado</label>
+							<input type="text" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>Teléfono</label>
+							<input type="text" class="form-control">
+						</div>
+						-->
+						<div class="form-group">
+							<input class="btn btn-primary pull-right" type="submit" value="Registrarme">
+						</div>
+						<div class="clearfix"></div>
+					</form>
+			    </div><!-- end content tab diseñador-->
+			  </div>
+
+			</div>
+
+		</div>
+	</div>
+</div>
+{% endblock contenido %}
+
+{% block js %}
+	<script>
+		$(document).ready(function(){
+			//Mostrar el easy_thumbnails_tags de la imagen en el div.
+			$('input[type=file]').change(function(e) {
+		        if(typeof FileReader == "undefined") return true;
+		        var elem = $(this);
+		        var files = e.target.files;
+		        for (var i = 0, f; f = files[i]; i++) {
+		            if (f.type.match('image.*')) {
+		                var reader = new FileReader();
+		                reader.onload = (function(theFile) {
+		                    return function(e) {
+		                        var image = e.target.result;
+		                        previewDiv = $('.file-preview');
+		                        bg_width = previewDiv.width() * 2;
+		                        previewDiv.css({
+		                            "background-image":"url("+image+")",
+		                        });
+		                    };
+		                })(f);
+		                reader.readAsDataURL(f);
+		            }
+		        }
+		    });
+
+		    $("#profileurl").change(function(e){
+		    	d = { "s":$("#profileurl").val() };
+		    	$.ajax({
+					url:"/ajax/profile/",
+					data:d,
+					type:"GET",
+					success: function(result){
+						if(result["message"] == "True"){
+							alert("El URL ya está siendo usado.");
+							$("#profileurl").val("");
+							$("#profileurl").focus();
+						}
+					}
+				});
+		    });
+		});
+	</script>
+{% endblock js %}

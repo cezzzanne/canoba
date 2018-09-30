@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block contenido %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-offset-3 col-md-6">
+			<h1 align="center" class="upper">Cambiar Contraseña</h1>
+			<div class="form-box">
+				<form class="parsley-validation" action="" method="POST">{% csrf_token %}
+					<div class="form-group">
+						<label>Contraseña Anterior</label>
+						<input type="password" name="apass" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Contraseña nueva</label>
+						<input id="pass-us" type="password" name="pass" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Confirmar Contraseña</label>
+						<input type="password" name="" class="form-control" required data-parsley-equalto="#pass-us" required>
+					</div>
+					<div class="form-group">
+						<input class="btn btn-primary pull-right" type="submit" value="Enviar">
+					</div>
+					<div class="clearfix"></div>
+				</form>
+			</div><!-- end form-box-->
+		</div>
+	</div>
+</div>
+{% endblock contenido %}

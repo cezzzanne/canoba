@@ -1,0 +1,18 @@
+.img-producto{
+	margin-top: 35px;
+	position: relative;
+}
+.descripcion-prod p{
+	line-height: 1;
+}
+#diseno-img{
+	border: 1px solid rgba(204, 204, 204, 0.58);
+}
+.share-list{
+	margin-left: -5px;
+}
+.share-list li{
+	vertical-align: middle;
+	height: 40px;
+	margin: 2px -3px !important;
+}

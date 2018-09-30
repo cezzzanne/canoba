@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block contenido %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-offset-3 col-md-6">
+			<h1 align="center" class="upper">Inicia Sesión</h1>
+			<div class="form-box">
+				<form class="parsley-validation" action="" method="POST">{% csrf_token %}
+					<div class="form-group">
+						<label>Correo Electrónico</label>
+						<input id="email" type="email" name="email" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Contraseña</label>
+						<input type="password" name="pass" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<a href="{% url 'reset_pass' %}" id="rec-pass" style="text-decoration:underline">Olvidé mi contraseña</a>
+						<input class="btn btn-primary pull-right" type="submit" value="Entrar">
+					</div>
+					<div class="clearfix"></div>
+				</form>
+				<form action="{% url 'reset_pass' %}" id="frm-rpass" method="POST">
+					{% csrf_token %}
+					<input type="hidden" name="res-email" id="res-email" required>
+				</form>
+			</div><!-- end form-box-->
+		</div>
+	</div>
+</div>
+{% endblock contenido %}
+
+{% block js %}
+	<script>
+		$(document).ready(function(){
+			$("#email").focus();
+		});
+	</script>
+{% endblock js %}

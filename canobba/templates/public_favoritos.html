@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block extra_head %}
+
+<!-- Grid plugin -->
+<link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/component.css' %}" />
+
+<!-- Carousel -->
+<link rel="stylesheet" href="{% static 'css/carousel.css' %}">
+{% endblock extra_head %}
+
+{% block contenido %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h3>Favoritos de {{disenador.nombre}} {{disenador.apellidos}}</h3>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+
+				<ul class="pagination pull-right">
+					{% if disenos.has_previous %}
+						<li><a href="?page={{ disenos.previous_page_number }}">&laquo;</a></li>
+					{% endif %}
+
+					{% for page in disenos.paginator.page_range %}
+						<li {% if page ==  disenos.number %}class="active"{% endif %}><a href="?page={{ page }}">{{ page }}</a></li>
+					{% endfor %}
+
+					{% if disenos.has_next %}
+						<li><a href="?page={{ disenos.next_page_number }}">&raquo;</a></li>
+					{% endif %}
+				</ul>
+
+			</div>
+		</div>
+		<div class="row" style="margin-top: 20px;">
+			{% for diseno in favoritos %}
+				<div class="col-md-3 col-sm-4 design-bx">
+					<a class="link-design" href="{% url 'diseno' diseno.producto.producto.slug %}">
+							{% if diseno.producto.orientacion == 'vertical' %}
+									<img class="img-responsive" src="{{ im.url }}">
+							{% elif diseno.producto.orientacion == 'horizontal' %}
+									<img class="img-responsive" src="{{ im.url }}">
+							{% else %}
+									<img class="img-responsive" src="{{ im.url }}">
+							{% endif %}
+						<div class="view-prod">
+							<div class="view-design">Ver</div>
+						</div>
+					<h3 class="diseno-name-link">{{ diseno.producto.producto.nombre }}</h3>
+					</a>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock contenido %}

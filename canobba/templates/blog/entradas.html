@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block extra_head %}
+<style>
+.entrada-wrap{
+	padding: 20px;
+	border-bottom: 1px solid #000;
+}
+.titulo-entrada{
+	margin-bottom: 0px;
+	padding-bottom: 0px;
+	margin-left: 30px;
+	font-size: 2.3em;
+    font-weight: bold;
+}
+.fecha-entrada{
+	margin: 0;
+	font-size: 16px;
+	padding: 3px 0;
+	margin-left: 30px;
+	color: #999999;
+}
+.descripcion-entrada{
+	padding: 8px 15px;
+	text-align: justify;
+	font-size: 17px;
+	margin-left: 15px;
+}
+.ul_categorias{
+	padding-left: 20px;
+	margin-left: 30px;
+}
+.ul_categorias li{
+	color: #999999;
+	padding: 10px;
+}
+.ul_categorias li > a{
+	font-size: 18px;
+	font-weight: bold;
+}
+.container-search{
+	margin-top:20px;
+}
+.form-control{
+	background-color: #f5f5f5;
+    border: none;
+    box-shadow: none;
+}
+.form-control:focus{
+	border-color: #f5f5f5;
+    outline: 0;
+    box-shadow: none;
+}
+#input_container {
+    position:relative;
+    background:#ddd;
+    direction: ltr;
+    width: 100%;
+}
+#input {
+    margin:0;
+    padding-right: 30px;
+    width: 100%;
+}
+#input_img {
+    position:absolute;
+    bottom:5px;
+    right:20px;
+    width:24px;
+    height:24px;
+}
+.window-shares{
+	position: absolute;
+}
+.share-icons{
+	display: inline-flex;
+    margin-left: 30px;
+}
+.share-icons .item{
+	padding: 5px;
+}
+.facebook_icon svg:hover .ff{
+	fill:#254783;
+}
+.twitter_icon svg:hover .tt{
+	fill:#2293bf;
+}
+.pinterest_icon svg:hover .pp{
+	fill:#e32237;
+}
+.facebook_icon svg .ff,
+.twitter_icon svg .tt,
+.pinterest_icon svg .pp {
+  transition: 200ms;
+  transition-timing-function: ease-in-out;
+  -webkit-transition: 200ms;
+  -webkit-transition-timing-function: ease-in-out;
+}
+</style>
+{% endblock extra_head %}
+
+{% block contenido %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-8">
+			<div class="container-search" id="input_container">
+				<form action="{% url 'buscar_entrada' %}" role="form">
+					<input type="text" placeholder="Buscar" id='input' name='q' class="form-control">
+					<img src="https://cdn1.iconfinder.com/data/icons/hawcons/32/698627-icon-111-search-128.png" id="input_img">
+				</form>
+			</div>
+			<div class="container-entradas">
+				{% for entrada in entradas %}
+					<div class="entrada-wrap">
+						<div class="row">
+							<div class="img-entrada">
+								<a href="{% url 'entrada' entrada.slug %}">
+									<img class="img-responsive" src="{{ im.url }}" alt="{{ entrada.titulo }}">
+								</a>
+							</div>
+							<h2 class="titulo-entrada"><a href="{% url 'entrada' entrada.slug %}">{{ entrada.titulo }}</a></h2>
+							<p class="fecha-entrada">{{ entrada.fecha|date:"d / M / Y" }}</p>
+							<p class="descripcion-entrada">{{ entrada.contenido|striptags|safe|truncatechars:"490" }}</p>
+							<div class="window-shares">
+
+								<div class="share-icons">
+									<div class="item">
+										<a class="facebook_icon" href="#" onclick="share_fb('http://dev.canobba.com{{request.path}}entrada/{{entrada.slug}}');return false;" share_url="http://dev.canobba.com{{request.path}}entrada/{{entrada.slug}}" rel="nofollow"  target="_blank">
+											<!--<div class="icon-f"></div>-->
+											<?xml version="1.0" encoding="utf-8"?>
+											<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+											<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+											<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+												width="23.627px" height="24px" viewBox="0 0 23.627 24" enable-background="new 0 0 23.627 24" xml:space="preserve">
+
+												<path class="ff" fill="#B3B3B3" d="M11.814,24C5.301,24,0,18.617,0,12S5.301,0,11.814,0s11.812,5.383,11.812,12S18.328,24,11.814,24z
+														M11.814,0.96C5.829,0.96,0.96,5.912,0.96,12c0,6.087,4.869,11.04,10.854,11.04c5.984,0,10.852-4.953,10.852-11.04
+														C22.666,5.912,17.799,0.96,11.814,0.96z"/>
+
+													<path class="ff" fill="#B3B3B3" d="M13.941,12.801l0.249-1.975h-1.923v-1.26c0-0.57,0.158-0.959,0.964-0.959h1.027V6.843
+															c-0.18-0.023-0.788-0.077-1.495-0.077c-1.484,0-2.498,0.92-2.498,2.607v1.453H8.589v1.975h1.677v5.061h2.002v-5.061H13.941z"/>
+											</svg>
+										</a>
+									</div>
+									<div class="item">
+										<a class="twitter_icon" href="#" onclick="share_twitter('http://dev.canobba.com{{request.path}}entrada/{{entrada.slug}}');return false;" share_url="http://dev.canobba.com{{request.path}}entrada/{{entrada.slug}}" rel="nofollow"  target="_blank">
+											<?xml version="1.0" encoding="utf-8"?>
+											<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+											<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+											<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+												width="23.624px" height="24px" viewBox="0 0 23.624 24" enable-background="new 0 0 23.624 24" xml:space="preserve">
+															<path class="tt" fill="#B3B3B3" d="M16.929,9.148c-0.369,0.168-0.77,0.279-1.187,0.33c0.425-0.261,0.755-0.668,0.909-1.161
+																c-0.4,0.242-0.84,0.415-1.312,0.511c-0.376-0.408-0.911-0.662-1.503-0.662c-1.14,0-2.063,0.938-2.063,2.096
+																c0,0.164,0.018,0.326,0.051,0.477c-1.711-0.084-3.229-0.922-4.247-2.188C7.4,8.857,7.299,9.218,7.299,9.604
+																c0,0.727,0.363,1.367,0.915,1.744c-0.337-0.011-0.653-0.106-0.933-0.265v0.03c0,1.016,0.709,1.859,1.652,2.053
+																c-0.171,0.049-0.354,0.076-0.541,0.076c-0.133,0-0.262-0.016-0.389-0.039c0.261,0.833,1.023,1.44,1.926,1.457
+																c-0.703,0.562-1.594,0.896-2.56,0.896c-0.169,0-0.332-0.013-0.494-0.032c0.913,0.598,1.999,0.941,3.161,0.941
+																c3.794,0,5.869-3.191,5.869-5.961c0-0.091-0.003-0.182-0.008-0.271C16.303,9.938,16.651,9.568,16.929,9.148z"/>
+													<path class="tt" fill="#B3B3B3" d="M11.814,24C5.299,24,0,18.617,0,12S5.299,0,11.814,0c6.512,0,11.81,5.383,11.81,12S18.326,24,11.814,24z
+														M11.814,0.96C5.829,0.96,0.96,5.912,0.96,12c0,6.087,4.869,11.04,10.854,11.04c5.982,0,10.85-4.953,10.85-11.04
+														C22.664,5.912,17.797,0.96,11.814,0.96z"/>
+											</svg>
+										</a>
+									</div>
+									<div class="item">
+										<a class="pinterest_icon" href="#" onclick="share_pinterest('http://dev.canobba.com{{request.path}}entrada/{{entrada.slug}}');return false;" share_url="http://dev.canobba.com{{request.path}}entrada/{{entrada.slug}}" rel="nofollow"  target="_blank">
+											<?xml version="1.0" encoding="utf-8"?>
+											<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+											<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+											<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+												width="23.629px" height="24px" viewBox="0 0 23.629 24" enable-background="new 0 0 23.629 24" xml:space="preserve">
+
+													<path class='pp' fill="#B3B3B3" d="M11.819,24C5.302,24,0,18.617,0,12S5.302,0,11.819,0c6.512,0,11.81,5.383,11.81,12S18.331,24,11.819,24z
+														M11.819,0.96C5.831,0.96,0.96,5.912,0.96,12c0,6.087,4.871,11.04,10.859,11.04c5.982,0,10.85-4.953,10.85-11.04
+														C22.669,5.912,17.802,0.96,11.819,0.96z"/>
+												<path class='pp' fill-rule="evenodd" clip-rule="evenodd" fill="#B3B3B3" d="M11.752,14.197c-0.112,0.468-0.226,0.896-0.326,1.334
+													c-0.205,0.873-0.625,1.635-1.159,2.341c-0.043,0.053-0.111,0.078-0.172,0.111c-0.03-0.064-0.093-0.123-0.098-0.192
+													c-0.136-1.029-0.092-2.045,0.158-3.049c0.225-0.886,0.434-1.777,0.646-2.669c0.019-0.079-0.012-0.179-0.036-0.264
+													c-0.18-0.622-0.239-1.237,0.072-1.839c0.211-0.4,0.506-0.694,0.983-0.707c0.54-0.014,0.944,0.346,0.905,0.896
+													c-0.027,0.431-0.145,0.855-0.248,1.279c-0.084,0.361-0.215,0.711-0.297,1.072c-0.182,0.841,0.56,1.422,1.371,1.178
+													c0.327-0.104,0.585-0.302,0.788-0.582c0.373-0.528,0.606-1.114,0.677-1.758c0.051-0.426,0.101-0.859,0.081-1.283
+													c-0.052-1.051-0.616-1.645-1.544-1.949c-1.043-0.342-2.029-0.173-2.972,0.472c-0.88,0.604-1.394,2.14-0.979,3.111
+													c0.079,0.182,0.184,0.353,0.281,0.529c0.137,0.253,0.092,0.807-0.129,0.979c-0.086,0.07-0.282,0.062-0.404,0.015
+													c-0.472-0.188-0.74-0.583-0.905-1.05c-0.369-1.044-0.366-2.087,0.144-3.082c0.413-0.797,1.066-1.373,1.857-1.75
+													c1.479-0.703,2.964-0.75,4.434,0.031c0.495,0.265,0.877,0.661,1.215,1.113c0.474,0.653,0.624,1.391,0.599,2.186
+													c-0.034,0.955-0.244,1.852-0.736,2.674c-0.644,1.068-1.573,1.595-2.804,1.546c-0.488-0.02-0.93-0.203-1.277-0.585
+													C11.845,14.277,11.808,14.25,11.752,14.197z"/>
+											</svg>
+										</a>
+									</div>
+								</div>
+							</div>
+							<a href="{% url 'entrada' entrada.slug %}" class="black-button pull-right">Ver más</a>
+							<div class="clear"></div>
+						</div><!-- /.row -->
+					</div>
+				{% endfor %}
+				{% if entradas.paginator.num_pages > 1 %}
+					<ul class="pagination pull-right">
+						{% if entradas.has_previous %}
+							<li><a href="?page={{ entradas.previous_page_number }}">&laquo;</a></li>
+						{% endif %}
+
+						{% for page in entradas.paginator.page_range %}
+								<li {% if page ==  entradas.number %}class="active"{%endif%}><a href="?page={{ page }}">{{ page }}</a></li>
+						{% endfor %}
+
+						{% if entradas.has_next %}
+							<li><a href="?page={{ entradas.next_page_number }}">&raquo;</a></li>
+						{% endif %}
+					</ul>
+				{% endif %}
+			</div>
+		</div>
+		<div class="col-md-4">
+			<h3 style="margin-left:30px;">CATEGORÍAS</h3>
+			<div class="conteiner_categorias">
+				<ul class="ul_categorias">
+					{% for cate in categorias %}
+						<li><a href="{% url 'categoria' cate.slug%}">{{cate.nombre}}</a></li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	function share_fb(url) {
+		console.log(url);
+		window.open('https://www.facebook.com/sharer/sharer.php?u='+url,'facebook-share-dialog',"width=626,height=436");
+	}
+
+	function share_twitter(url) {
+		window.open('https://twitter.com/intent/tweet?url='+url,'twitter',"width=626,height=436");
+	}
+
+	function share_instagram(url){
+		window.open('https://twitter.com/intent/tweet?url='+url,'instagram',"width=626,height=436")
+	}
+
+	function share_pinterest(url){
+		window.open('http://pinterest.com/pin/create/bookmarklet/?url=' + url,'pinterest',"width=626,height=436");
+	}
+
+	function share_google_plus(url){
+		window.open('https://plus.google.com/share?url=' + url,'google plus',"width=626,height=436");
+	}
+</script>
+{% endblock contenido %}

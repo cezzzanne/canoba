@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<meta property="og:title" content="{{ entrada.titulo }}" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://canobba.com{{ path }}" />
+<meta property="og:image" content="http://canobba.com{{ im.url }}" />
+<meta property="og:description" content="{{ entrada.contenido|striptags|safe|truncatechars:"490" }}" />
+
+
+<style>
+.description-wrap{
+	padding: 35px 0;
+	font-size: 18px;
+	line-height: 1.8;
+}
+.imgwrap{
+	/*margin: 15px 0;*/
+	max-height: 800px;
+	overflow: hidden;
+}
+.imgwrap img{
+	min-width: 100%;
+}
+.list-inline li{
+	vertical-align: middle;
+	height: 40px;
+}
+small .backbtn{
+	background-color: #f5f5f5;
+    width: 110px;
+    padding: 15px;
+}
+</style>
+{% endblock extra_head %}
+
+{% block contenido %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<h2>
+				{{ entrada.titulo }}
+				<small>
+					<a class="backbtn pull-right" href="javascript:goBack()">
+						<i style="font-size: 10px;" class="glyphicon glyphicon-chevron-left"></i> Regresar
+					</a>
+				</small>
+			</h2>
+			<p class="text-muted"><i>{{ entrada.fecha|date:"d / M / Y"}}</i></p>
+			<div class="imgwrap">
+				<img class="img-responsive" src="{{ entrada.imagen.url }}" alt="{{ entrada.titulo }}">
+			</div>
+			<div class="description-wrap">
+				{{ entrada.contenido|safe }}
+			</div>
+			<div class="share-list">
+				<ul class="list-inline">
+					<li>
+						<div class="fb-share-button" data-href="http://canobba.com/{{ path }}" data-layout="button"></div>
+					</li>
+					<li>
+						<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://canobba.com/{{ path }}" data-count="none">Tweet</a>
+						<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+					</li>
+					<li>
+						<a id="pinit" href="//www.pinterest.com/pin/create/button/" data-pin-do="buttonPin"  data-pin-color="red">
+							<img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_red_20.png" />
+						</a>
+					</li>
+				</ul>
+			</div>
+
+		</div><!-- end col-md-12 -->
+
+		<!-- Comentarios -->
+		<div class="col-md-12">
+			 <div id="disqus_thread"></div>
+			    <script type="text/javascript">
+			        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+			        var disqus_shortname = 'blogcanobba'; // required: replace example with your forum shortname
+
+			        /* * * DON'T EDIT BELOW THIS LINE * * */
+			        (function() {
+			            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+			            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+			            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+			        })();
+			    </script>
+			    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+		</div>
+		<!-- end Comentarios -->
+
+	</div><!-- end row -->
+</div>
+{% endblock contenido %}
+
+{% block js %}
+
+<!-- Please call pinit.js only once per page -->
+<script type="text/javascript" async defer src="//assets.pinterest.com/js/pinit.js"></script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+<script>
+$(function(){
+	// href = $("#pinit").attr("href");
+	// href += "?url=http://canobba.com" + '{{ path }}'
+})
+</script>
+
+
+{% endblock js %}

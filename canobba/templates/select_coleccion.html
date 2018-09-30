@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block extra_head %}
+
+<!-- Grid plugin -->
+<link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/component.css' %}" />
+
+<!-- Carousel -->
+<link rel="stylesheet" href="{% static 'css/carousel.css' %}">
+<style>
+	.carousel-control{
+		opacity: 0;
+	}
+
+	#carousel-example-generic:hover .carousel-control{
+		opacity: 1;
+	}
+
+	.carousel-indicators li{
+		width: 8px;
+		height: 8px;
+	}
+
+	.carousel-indicators .active{
+		width: 10px;
+		height: 10px;
+	}
+	.diseno-name-link{
+		height: 40px;
+		overflow: hidden;
+	}
+	.view-design{
+		bottom: 75px;
+	}
+</style>
+{% endblock extra_head %}
+
+
+{% block submenu %}
+<div class="sub-menu gray-main-bg">
+	<ul>
+		{% for col in colecciones %}
+			<li {% if col == coleccion %}class="active-sub"{% endif %}><a href="{% url 'coleccion' col.slug %}"><span>{{ col.nombre|title }}</span></a></li>
+		{% endfor %}
+	</ul>
+</div>
+{% endblock submenu %}
+
+{% block slider %}
+<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+  <!-- Indicators -->
+  <ol class="carousel-indicators">
+    {% for slide in slider.imagenes.all %}
+    	<li data-target="#carousel-example-generic" data-slide-to="{{ forloop.counter0 }}" {% if forloop.counter == 1 %}class="active"{% endif %}></li>
+	{% endfor %}
+  </ol>
+
+{% if slider %}
+
+  <!-- Wrapper for slides -->
+  <div class="carousel-inner">
+
+	{% for slide in slider.imagenes.all %}
+	    <div class="item {% if forloop.counter == 1 %}active{% endif %}">
+	      <img src="{{ slide.imagen.url|default:'http://placehold.it/1143x400' }}" class="img-responsive" alt="{{ slide.slider.nombre }}">
+	      {% if slide.texto %}
+	      <div class="carousel-caption">
+	      	<h1>{{ slide.texto }}</h1>
+	      </div>
+	      {% endif %}
+	    </div>
+	{% endfor %}
+
+  </div>
+
+{% endif %}
+
+  <!-- Controls -->
+  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+    <img style="height:40px" src="{% static 'img/prev.png' %}" alt="">
+  </a>
+  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+    <img style="height:40px" src="{% static 'img/next.png' %}" alt="">
+  </a>
+  </div>
+</div>
+
+{% endblock slider %}
+
+{% block contenido %}
+<div class="container">
+		{% if es_busqueda %}
+		<h1>{{ title }}</h1>
+		{% endif %}
+
+		<div class="row">
+
+			{% for diseno in disenos %}
+				<div class="col-md-3 col-sm-4 design-bx" style="width:20%;">
+					{% if es_busqueda %}
+						<a class="link-design" href="{% url 'diseno' diseno.slug %}">
+							    <img class="img-responsive" alt="{{ diseno.nombre }}" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+							<div class="view-prod">
+								<div class="view-design">Ver</div>
+							</div>
+						<h3 class="diseno-name-link">{{ diseno.nombre|title }}</h3>
+						</a>
+					{% else %}
+						<a class="link-design" href="{% url 'diseno' diseno.diseno.slug %}">
+							    <img class="img-responsive" alt="{{ diseno.diseno.nombre }}" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+							<div class="view-prod">
+								<div class="view-design">Ver</div>
+							</div>
+						<h3 class="diseno-name-link">{{ diseno.diseno.nombre|title }}</h3>
+						</a>
+					{% endif %}
+				</div>
+			{% endfor %}
+
+		</div>
+	</div>
+{% endblock contenido %}
+
+{% block js %}
+<script>
+	$(".carousel").hide();
+new GridScrollFx( document.getElementById( 'grid' ), {
+	viewportFactor : 0.4
+} );
+
+$(function(){
+	$(".like-heart").click(function(e){
+		e.preventDefault();
+	})
+})
+</script>
+{% endblock js %}

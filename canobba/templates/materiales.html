@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block extra_head %}
+<style>
+	.content-tb{
+		display: none;
+	}
+	.content-tb:first-child{
+		display: block;
+	}
+	.content-tb h1{
+		color: rgb(19,223,174);
+		padding: 15px;
+	}
+	.descripcion-mat{
+		font-size: 18px;
+		text-align: justify;
+	}
+	.extra-imgs{
+		list-style: none;
+		text-align: center;
+	}
+	.extra-imgs li{
+		display: inline-block;
+		width: 150px;
+		height: 150px;
+		margin: 15px;
+	}
+</style>
+<!--<link rel="stylesheet" type="text/css" href="{% static 'js/zoom/jqzoom.css' %}" />-->
+{% endblock extra_head %}
+
+{% block contenido %}
+<div class="sub-menu gray-main-bg">
+	<ul>
+		<!--<li data-content="#liso" class="active-sub itm-tb"><a href="#"><span>Lienzo Liso</span></a></li>-->
+		<li class="active-sub itm-tb" data-content="#texturizado"><a href="#"><span>Texturizado</span></a></li>
+		<li class="itm-tb" data-content="#canvas"><a href="#"><span>Canvas</span></a></li>
+		<li class="itm-tb" data-content="#vinipiel"><a href="#"><span>Vinipiel</span></a></li>
+	</ul>
+</div>
+<div class="container">
+	<div id="content-info">
+		<!--
+		<div class="content-tb" id="liso">
+			<h1>Lienzo Liso</h1>
+			<div class="col-md-4">
+				<div class="img-wrap">
+					<img src="{% static 'img/mat_liso.jpg' %}" class="img-responsive" alt="Lienzo Liso">
+				</div>
+			</div>
+
+			<div class="col-md-8">
+				<h3>Descripción</h3>
+				<p class="descripcion-mat">Material con acabado brillante, perfecta absorción de tinta y rápido secado. Es muy resistente y fácil de limpiar. Ideal para espacios expuestos al polvo y humedad.</p>
+				
+				<ul class="extra-imgs">
+					<li>
+						<a href="#" class="imagez1" title="Lienzo liso">
+							<img src="{% static 'img/liso_1.jpg' %}" alt="" title="Lienzo liso">
+						</a>
+					</li>
+					<li><img src="{% static 'img/liso_2.jpg' %}" alt=""></li>
+					<li><img src="{% static 'img/liso_3.jpg' %}" alt=""></li>
+				</ul>
+
+			</div>
+		</div>
+		-->
+		<div class="content-tb" id="texturizado">
+			<h1 style="font-family: 'Oswald',sans-serif !important;">&nbsp;&nbsp;&nbsp;TEXTURIZADO</h1>
+			<div class="col-md-4">
+				<div class="img-wrap">
+					<img src="{% static 'img/mat_text.jpg' %}" class="img-responsive" alt="Lienzo Liso">
+				</div>
+			</div>
+
+			<div class="col-md-8">
+				<h3 style="margin-top:0px;">DESCRIPCIÓN</h3>
+				<p class="descripcion-mat">Tela de alta calidad, especialmente diseñada para interiores con textura de acabado en brocha. Ideal para darle un acabado artístico a tus diseños. Además, cuenta con la característica de ser amigable con el medio ambiente ya que es 100% reciclable.</p>
+				
+				<ul class="extra-imgs">
+					<li>
+						<img class="zoom_1 doZoom" src="{% static 'img/texturizado_1.jpg' %}" alt="" data-zoom-image="{% static 'img/texturizado_1.jpg' %}">
+					</li>
+					<li>
+						<img class="zoom_1 doZoom" src="{% static 'img/texturizado_2.jpg' %}" alt="" data-zoom-image="{% static 'img/texturizado_2.jpg' %}">
+					</li>
+					<li>
+						<img class="zoom_1 doZoom" src="{% static 'img/texturizado_3.jpg' %}" alt="" data-zoom-image="{% static 'img/texturizado_3.jpg' %}">
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="content-tb" id="canvas">
+			<h1 style="font-family: 'Oswald',sans-serif !important;">&nbsp;&nbsp;&nbsp;CANVAS</h1>
+			<div class="col-md-4">
+				<div class="img-wrap">
+					<img src="{% static 'img/mat_canvas.jpg' %}" class="img-responsive" alt="Lienzo Liso">
+				</div>
+			</div>
+
+			<div class="col-md-8">
+				<h3 style="margin-top:0px;">DESCRIPCIÓN</h3>
+				<p class="descripcion-mat">Tela especial para decoración de interiores, ideal para reproducir pinturas artísticas y fotografía. </p>
+				
+				<ul class="extra-imgs">
+					<li>
+						<img class="zoom_1" src="{% static 'img/canvas_1.jpg' %}" alt="" data-zoom-image="{% static 'img/canvas_1.jpg' %}">
+					</li>
+					<li>
+						<img class="zoom_1" src="{% static 'img/canvas_2.jpg' %}" alt="" data-zoom-image="{% static 'img/canvas_2.jpg' %}">
+					</li>
+					<li>
+						<img class="zoom_1" src="{% static 'img/canvas_3.jpg' %}" alt="" data-zoom-image="{% static 'img/canvas_3.jpg' %}">
+					</li>
+				</ul>
+
+			</div>
+		</div>
+
+		<div class="content-tb" id="vinipiel">
+			<h1 style="font-family: 'Oswald',sans-serif !important;">&nbsp;&nbsp;&nbsp;VINIPIEL</h1>
+			<div class="col-md-4">
+				<div class="img-wrap">
+					<img src="{% static 'img/mat_vinipiel.jpg' %}" class="img-responsive" alt="Lienzo Liso">
+				</div>
+			</div>
+
+			<div class="col-md-8">
+				<h3 style="margin-top:0px;">DESCRIPCIÓN</h3>
+				<p class="descripcion-mat">También conocida como piel sintética, le da un acabado semibrillante a las impresiones, manteniendo los colores vivos. Especial para interiores dando un toque más elegante y sofisticado a tus espacios.</p>
+				
+				<ul class="extra-imgs">
+					<li>
+						<img class="zoom_1" src="{% static 'img/vinipiel_1.jpg' %}" alt="" data-zoom-image="{% static 'img/vinipiel_1.jpg' %}">
+					</li>
+					<li>
+						<img class="zoom_1" src="{% static 'img/vinipiel_2.jpg' %}" alt="" data-zoom-image="{% static 'img/vinipiel_2.jpg' %}">
+					</li>
+					<li>
+						<img class="zoom_1" src="{% static 'img/vinipiel_3.jpg' %}" alt="" data-zoom-image="{% static 'img/vinipiel_3.jpg' %}">
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock contenido %}
+
+{% block js %}
+<script src='{% static "js/zoom/jquery.elevatezoom.js" %}'></script>
+<!--<script type='text/javascript' src='{% static "js/zoom/jqzoom.js" %}'></script>-->
+<script>
+	$(function(){
+		$(".itm-tb").click(function(){
+			$(".content-tb").hide()
+			$(".itm-tb").removeClass("active-sub")
+			$(this).addClass("active-sub")
+			$($(this).data("content")).show()
+			$('.zoomContainer').remove();
+			$('.zoom_1').removeClass('doZoom');
+			$($(this).data("content")).find('.zoom_1').addClass('doZoom');
+			$('.doZoom').elevateZoom({
+				zoomType: "inner",
+				cursor: "crosshair",
+				zoomWindowFadeIn: 500,
+				zoomWindowFadeOut: 750
+			});
+		});
+		$('.doZoom').elevateZoom({
+	    	zoomType: "inner",
+			cursor: "crosshair",
+			zoomWindowFadeIn: 500,
+			zoomWindowFadeOut: 750
+		});
+	});
+	
+	
+</script>
+{% endblock js %}

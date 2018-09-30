@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/disenos.css' %}">
+
+<!-- open-graph -->
+<meta property="og:title" content="{{ diseno.nombre }}" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://canobba.com{{ path }}" />
+<meta property="og:image" content="http://canobba.com{{ im.url }}" />
+<meta property="og:description" content="Visita nuestro sitio web y descubre la gran variedad de diseños que tenemos para ti." />
+<!-- open-graph -->
+<style>
+	#btn-wish:hover{
+		color: #FFCC00 !important;
+	}
+</style>
+{% endblock extra_head %}
+
+{% block contenido %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-sm-5 col-md-4 col-sm-4 img-producto">
+			<img id="preload-gif" src="{% static 'img/circular_preload.gif' %}" alt="loading...">
+			<img class="img-responsive" id="diseno-img" src="{{ diseno.imagen.url|default:'http://placehold.it/1143x400' }}" alt="{{ diseno.nombre|upper }}">
+		</div>
+		<div class="col-sm-7 col-md-4 col-sm-7 col-xs-11">
+			<h1 style="font-weight:bold">{{ diseno.nombre|title|upper }}</h1>
+			<p>Por: <a href="{% url 'ver_perfil' diseno.usuario.profile_url %}">{{ diseno.usuario.get_full_name }}</a></p>
+			<h3><span id="precio" style="font-weight: bold;">${{ materiales.0.precio1 }}</span></h3>
+
+			{% if has_medidas %}
+
+			<div class="controls">
+				<div><label for="medidas">Tamaños</label></div>
+				<select class="form-control" name="medidas" id="medidas">
+					{% for medida in medidas %}
+				    <option data-img="{{ medida.imagen.url }}" value="{{ medida.medida }}">{{ medida.get_medida_display }}</option>
+					{% endfor %}
+				</select>
+			</div>
+
+			{% else %}
+			<p class="text-danger" style="font-size:17px">El diseño no cuenta con medidas disponibles</p>
+			{% endif %}
+			<div class="controls">
+				<div><label for="material">Material</label></div>
+				<select class="form-control" name="material" id="material">
+					{% for material in materiales %}
+						<option data-name="{{ material.get_material_display }}" value="{{ material.pk }}">{{ material.get_material_display }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="controls">
+				<div><label for="orientacion">Orientación</label></div>
+				<select class="form-control" name="orientacion" id="orientacion">
+					<option value="horizontal">Horizontal</option>
+					<option value="vertical" selected>Vertical</option>
+				</select>
+			</div>
+
+			{% if has_medidas %}
+
+			<a class="add-cart" id="add-cart-btn" href="{% url 'add_session_cart' %}?pk={{ diseno.pk }}" data-product="{{ diseno.pk }}" data-toggle="modal" data-target="#myModal">
+				<img src="{% static 'img/cart-wh.png' %}" alt="Agregar al carrito">Agregar al carrito
+			</a>
+
+			{% endif %}
+
+			<div class="share-box-inline">
+				{% if has_medidas %}
+				<p>
+					<a href="{% url 'add_session_cart' %}?pk={{ diseno.pk }}" id="btn-wish"><i class="glyphicon glyphicon-heart"></i> Lo quiero</a>
+				</p>
+				{% endif %}
+
+				<div class="share-list">
+					<ul class="list-inline">
+						<li>
+							<a target="_blank" href="http://www.facebook.com/sharer/sharer.php?s=100&amp;p[url]=http://canobba.com{{ path }}&amp;p[images][0]=http://canobba.com{{ im.url }}&amp;p[title]={{ diseno.nombre }}&amp;p[summary]=Visita nuestro sitio web y descubre la gran variedad de diseños que tenemos para ti.">
+								<img class="img-hov" src="{% static 'img/fb-head.png' %}" data-img="{% static 'img/fb-head.png' %}" data-imgn="{% static 'img/social-fb.png' %}">
+							</a>
+						</li>
+						<li>
+							{% autoescape off %}
+								<a target="_blank" href="https://twitter.com/intent/tweet?url=http://canobba.com{{ path }}&amp;via=canobba&amp;text={{ diseno.nombre }}">
+									<img class="img-hov" src="{% static 'img/tw-head.png' %}" data-img="{% static 'img/tw-head.png' %}" data-imgn="{% static 'img/social-tw.png' %}">
+								</a>
+							{% endautoescape %}
+						</li>
+						<li>
+							<a href="javascript:void((function()%7Bvar%20e=document.createElement(&apos;script&apos;);e.setAttribute(&apos;type&apos;,&apos;text/javascript&apos;);e.setAttribute(&apos;charset&apos;,&apos;UTF-8&apos;);e.setAttribute(&apos;src&apos;,&apos;http://assets.pinterest.com/js/pinmarklet.js?r=&apos;+Math.random()*99999999);document.body.appendChild(e)%7D)());">
+							    <!-- Here's a Photograph that is enabled for Pinterest pinning! -->
+							  	<!-- Optional: Multiple images can be placed here -->
+							  	<img class="img-hov" id="pin1click" src="{% static 'img/pi-head.png' %}" alt="img" title="Pin It" data-img="{% static 'img/pi-head.png' %}" data-imgn="{% static 'img/social-pin.png' %}"/>
+							</a>
+						</li>
+					</ul>
+				</div><!-- end share-list -->
+			</div>
+			<hr style="border-color:#808080;">
+			<b>Descripción</b><br>
+			<div class="descripcion-prod">
+				{{ diseno.descripcion|safe }}
+			</div>
+
+	</div>
+	<div class="hidden-xs hidden-sm col-md-3">
+		<h3 class="hidden-sm" align="center"></h3>
+		<img class="preload-gif" id="preload-gif" src="{% static 'img/circular_preload.gif' %}" alt="loading...">
+		<img id="material-img" style="max-height:150px" class="img-responsive" src="{% static 'img/mat_canvas.jpg' %}" alt="">
+		<h3 id="nomb-mat" class="hidden-sm" align="center" style="font-family:'Tw Cen W02 Light'; color:#848080;">Canvas</h3>
+	</div>
+</div>
+
+<!-- Modal Agregar al carrito -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Canobba</h4>
+      </div>
+      <div class="modal-body">
+        Su producto se agregó correctamente al carrito, ¿Que desea hacer?
+      </div>
+      <div class="modal-footer">
+        <a id="btn-seguir" href="" class="btn btn-default modal-seguir">Seguir comprando</a>
+        <a id="btn-carrito" href="" class="btn btn-primary modal-carrito">Ir al carrito</a>
+      </div>
+    </div>
+  </div>
+</div>
+<input id="dis-pk" type="hidden" value="{{ diseno.pk }}">
+{% endblock contenido %}
+
+{% block js %}
+<script src="{% static 'js/diseno.js' %}"></script>
+<script>
+	$(document).ready(function(){
+		$(".img-hov").mouseenter(function(){
+			$(this).attr("src", $(this).data("imgn"));
+		});
+		$(".img-hov").mouseleave(function(){
+			$(this).attr("src", $(this).data("img"));
+		});
+	});
+</script>
+<!-- Please call pinit.js only once per page -->
+<!-- <script type="text/javascript" async defer src="//assets.pinterest.com/js/pinit.js"></script> -->
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+{% endblock js %}

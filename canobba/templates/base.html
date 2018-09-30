@@ -1,0 +1,423 @@
+{% load staticfiles %}
+{% load carton_tags %}
+<!--
+-->
+<!DOCTYPE html>
+<html lang="es" prefix="og: //ogp.me/ns# fb: //ogp.me/ns/fb# article: //ogp.me/ns/article#">
+<head>
+	<meta charset="UTF-8">
+	<title>Canobba :: {{ title|title }}</title>
+	<link rel="shortcut icon" href="{% static 'img/favicon.png' %}" type="image/x-icon">
+	<link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon">
+	<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
+	<link rel="stylesheet" href="{% static 'css/base.css' %}">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link href='//fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="{% static 'css/alertify.core.css' %}"/>
+	<link rel="stylesheet" href="{% static 'css/alertify.default.css' %}">
+	<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+	<!-- owl carousel -->
+	<link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
+	<link rel="stylesheet" href="{% static 'css/owl.transitions.css' %}">
+	<!-- Font awsome -->
+	<link rel="stylesheet" href="{% static 'css/font-awesome/css/font-awesome.min.css' %}">
+	<!-- Select2 -->
+	<link rel="stylesheet" href="{% static 'js/select2/css/select2.css' %}">
+
+	<style>
+		.hlink a:hover{
+			color:#FFFF00 !important;
+		}
+
+		.fa:hover {
+			color:#FFFF00 !important;
+		}
+	</style>
+	{% block extra_head %}
+  	{% endblock extra_head %}
+
+</head>
+<body>
+	<div id="wishlist-wrapper">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<h1 align="center">Favoritos
+						<i class="glyphicon glyphicon-heart"></i>
+						<small class="pull-right"><a href="#" id="close-wishlist"><i class="glyphicon glyphicon-remove"></i></a></small>
+					</h1>
+				</div>
+			</div>
+
+			<div class="row">
+				{% if not cartw %}
+					<p align="center" style="padding: 15px;margin: 10px;border: 1px dashed #ccc;font-size: 17px;color: #636363;">Su lista se encuentra vacia.</p>
+				{% endif %}
+				<div id="wishlist-carousel">
+					{% if user.is_authenticated %}
+						{% for producto in cartw %}
+						<div class="item item-wishlist">
+							<a title="Eliminar del wishlist" class="remove-item-wishlist" href="{% url 'remove_wishlist' producto.producto.id %}"><i class="glyphicon glyphicon-remove"></i></a>
+
+
+
+							<div class="view-prod">
+								<a href="{% url 'move_cart' producto.producto.id %}" class="move-to-cart">Mover al carrito</a>
+							</div>
+						</div><!-- end item -->
+						{% endfor %}
+					{% else %}
+						{% for producto in cartw.items %}
+						<div class="item item-wishlist">
+							<a title="Eliminar del wishlist" class="remove-item-wishlist" href="{% url 'remove_wishlist' producto.product.id %}"><i class="glyphicon glyphicon-remove"></i></a>
+							<a class="link-design" href="#">
+
+							</a>
+							<div class="view-prod">
+								<a href="{% url 'move_cart' producto.product.id %}" class="move-to-cart">Mover al carrito</a>
+							</div>
+						</div><!-- end item -->
+						{% endfor %}
+					{% endif %}
+				</div><!-- end #wishlist-carousel -->
+			</div>
+		</div>
+	</div>
+
+	<div class="hidden-lg hidden-md hidden-sm mobil-user-menu">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<ul style="margin-bottom: 0;margin-left: 10px;" class="list-inline pull-right">
+						<li style="padding:0">
+							<a class="btn" style="padding:6px" href="#" id="wishlist-link-mob">
+							<img style="height:20px;margin-right:3px" src="{% static 'img/like.png' %}" alt="">(
+							{% if user.is_authenticated %}
+								{{ user.wishlist.count }}
+							{% else %}
+								{{ cartw.unique_count }}
+							{% endif %})
+						</a>
+						</li>
+						<li style="padding:0">
+							<a class="btn" style="padding:6px" href="{% url 'show_cart' %}">
+							<img style="height:20px;margin-right:3px" src="{% static 'img/cart-head.png' %}" alt="">({{ cart.count }})
+						</a>
+						</li>
+					</ul>
+
+					<div class="dropdown pull-right">
+					  <button class="btn btn-default dropdown-toggle" type="button" id="userMenu" data-toggle="dropdown" aria-expanded="true">
+					    <i class="glyphicon glyphicon-user"></i> {{ request.user.nombre }}
+					    <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu" role="menu" aria-labelledby="userMenu">
+					  	{% if user.is_authenticated %}
+					    <li role="presentation"><a href="{% url 'recover_pass' %}">Cambiar Contraseña</a></li>
+					    <li role="presentation"><a href="{% url 'mis_pedidos' %}">Mis Pedidos</a></li>
+					    <li role="presentation"><a href="{% url 'logout_user' %}">Salir</a></li>
+					    {% else %}
+					    <li><a href="{% url 'registro' %}">Regístrate</a> </li>
+					    <li><a href="{% url 'login_form' %}">Inicia sesión</a></li>
+					    {% endif %}
+					  </ul>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="header">
+		<div class="container">
+
+			<div class="row">
+				<div class="container">
+					<div class="col-md-12">
+						<div class="pull-right social-auth">
+							<p>
+								{% if user.is_authenticated %}
+								<!-- ERROR -->
+
+									<a {% if user.tipo == 2 %}href="{% url 'ver_perfil' user.id %}"{% else %}href="{% url 'ver_perfil' user.id %}"{% endif %}>Bienvenido(a), {{ user.usario }}</a>
+									<a href="{% url 'recover_pass' %}">Cambiar Contraseña</a>
+									<a href="{% url 'mis_pedidos' %}">Mis Pedidos</a>
+									<a href="{% url 'logout_user' %}">Salir</a>
+
+								{% else %}
+									<a href="{% url 'registro' %}">Regístrate</a>
+									<a href="{% url 'login_form' %}">Inicia sesión
+										<!--
+										<img style="height:20px;" src="{% static 'img/fb-head.png' %}" alt="">
+										<img style="height:20px;" src="{% static 'img/tw-head.png' %}" alt="">
+										-->
+									</a>
+								{% endif %}
+								<a href="{% url 'ver_favoritos' user.profile_url %}"><img style="height:20px;margin-right:3px" src="{% static 'img/like.png' %}" alt="">Lo quiero (
+								{% if user.is_authenticated %}
+					    			{{ user.wishlist.count }}
+					    		{% else %}
+					    			{{ cartw.unique_count }}
+					    		{% endif %})
+					    		</a>
+								<a href="{% url 'show_cart' %}"><img style="height:20px;margin-right:3px" src="{% static 'img/cart-head.png' %}" alt="">{{ cart.count }} Compra(s)</a>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-7">
+					<div class="logo brand">
+						<a href="{% url 'home' %}"><img src="{% static 'img/logo.png' %}" alt="Canobba"></a>
+						<p class="slogan">Cuadros impresos montados en bastidor</p>
+					</div>
+
+				</div>
+				<div class="col-md-5">
+					<div class="as_table" style="height: 115px;">
+						<form class="search-form" action="#" method="GET"> <!--{% url 'buscar' %}-->
+							<!--
+							<input required class="form-control" type="text" name="q" placeholder="Encuentra por color, artista y más...">
+							<input type="submit" class="submit-search" value="">
+							-->
+							<div class="input-group" style="margin-bottom:10px;display: block;">
+							  <!--<input style="border-right:none" name="q" type="text" class="form-control" placeholder="Encuentra por color, artista y más..." aria-describedby="basic-addon2">-->
+							  <select class="js-data-example-ajax" style="width: 90%"></select>
+							  <button style="background-color:#d8d8d8;height: 30px;" class="btn"><i class="glyphicon glyphicon-search" style="color: #fff;"></i></button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div><!-- end row-->
+
+		</div>
+	</div> <!-- End header -->
+
+	{% if messages %}
+	<div class="container">
+		<div class="flash_messages">
+			<ul>
+			    {% for message in messages %}
+			    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+			    {% endfor %}
+			</ul>
+		</div><!-- /.flash_messages -->
+	</div>
+	{% endif %}
+
+	{% block slider %}
+	{% endblock slider %}
+	<div id="nav">
+		<div class="main-menu">
+			<nav class="navbar navbar-default">
+			  <div class="container">
+			    <!-- Brand and toggle get grouped for better mobile display -->
+			    <div class="navbar-header">
+			      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-menu-collapse">
+			        <span class="sr-only">Menu</span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			      </button>
+			    </div>
+
+			    <!-- Collect the nav links, forms, and other content for toggling -->
+			    <div class="collapse navbar-collapse" id="main-menu-collapse" style="background-color:#DCDDDD;">
+			      <ul class="nav navbar-nav">
+			        <li {% if path == "/" %} class="active"{% else %}class="hlink"{% endif %}><a href="{% url 'home' %}">Inicio</a></li>
+			        <li {% if "/coleccion" in path or "/diseno" in path %} class="active"{% else %}class="hlink"{% endif %}><a href="{% url 'colecciones' %}">Colecciones</a></li>
+			        <li {% if path == "/materiales/" %} class="active"{% else %}class="hlink"{% endif %}><a href="{% url 'materiales' %}">Materiales</a></li>
+			        <li {% if path == "/diario/" %} class="active"{% else %}class="hlink"{% endif %}><a href="{% url 'blog' %}">Blog</a></li>
+			        <li {% if path == "/contacto/" %} class="active"{% else %}class="hlink"{% endif %}><a href="{% url 'contacto' %}">Contacto</a></li>
+			        <li class="pull-right" style="margin: 0;">
+			        	<ul class="list-inline socials-list">
+					      	<li>
+					      		<a target="_blank" href="//www.facebook.com/canobba"><i class="fa fa-facebook"></i></a>
+					      	</li>
+					      	<li>
+					      		<a target="_blank" href="//twitter.com/canobba"><i class="fa fa-twitter"></i></a>
+					      	</li>
+					      	<li>
+					      		<a target="_blank" href="//instagram.com/canobba"><i class="fa fa-instagram"></i></a>
+					      	</li>
+					      	<li>
+					      		<a target="_blank" href="//www.pinterest.com/CANOBBADECOR/"><i class="fa fa-pinterest"></i></a>
+					      	</li>
+					    </ul>
+			  		</li>
+			      </ul>
+			    </div><!-- /.navbar-collapse -->
+			  </div><!-- /.container-fluid -->
+			</nav>
+		</div>
+	</div> <!-- end main-menu -->
+
+	{% block submenu %}
+	{% endblock submenu %}
+
+	{% block contenido %}
+	{% endblock contenido %}
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title" id="myModalLabel">Mi Perfil</h4>
+		</div>
+		<div class="modal-body">
+			{{ disenador.biografia }}
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+		</div>
+		</div>
+	</div>
+	</div>
+	<br>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<p align="center"><a href="#"><img style="height:115px;" src="{% static 'img/imgo.jpeg' %}" alt=""></a></p>
+			</div>
+		</div>
+	</div>
+
+
+<div class="footer">
+	<div class="container">
+		<p><a href="{% url 'show_pdf' %}" target="_blank">Aviso de privacidad</a></p>
+	</div>
+</div>
+
+<script src="{% static 'js/jquery-1.11.1.min.js' %}"></script>
+<!--<script src="http://code.jquery.com/jquery-migrate-1.2.1.js"></script>-->
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/modernizr.custom.js' %}"></script>
+<script src="{% static 'js/accounting.min.js' %}"></script>
+<script src="{% static 'js/functions.js' %}"></script>
+<script src="{% static 'js/alertify.min.js' %}"></script>
+<script src="{% static 'js/select2/js/select2.min.js' %}"></script>
+<script src="{% static 'js/select2/js/i18n/es.js' %}"></script>
+<script>
+window.ParsleyConfig = {
+  errorsWrapper: '<div class="text-danger"></div>',
+  errorTemplate: '<span></span>'
+};
+</script>
+
+<!-- Parsley validation-->
+<script src="{% static 'js/parsley.remote.min.js' %}"></script>
+<script src="{% static 'js/parsley-lang-es.js' %}"></script>
+<script src="{% static 'js/masonry.pkgd.min.js' %}"></script>
+<script src="{% static 'js/imagesloaded.pkgd.min.js' %}"></script>
+<script src="{% static 'js/classie.js' %}"></script>
+<script src="{% static 'js/colorfinder-1.1.js' %}"></script>
+<script src="{% static 'js/gridScrollFx.js' %}"></script>
+<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+
+{% block js %}
+{% endblock js %}
+
+{% if messages %}
+<script>
+$(function(){
+	setTimeout(function (){
+
+		$(".flash_messages").slideDown('fast');
+
+		setTimeout(function (){
+			$(".flash_messages").slideUp('fast');
+		},7500)
+
+	},300)
+})
+</script>
+{% endif %}
+
+<script>
+$(function(){
+
+	function formatCountry (data) {
+		if (!data.id) { return data.text; }
+		if(data.imagen){
+			var $country = $(
+				'<img class="select2-img-rounded" src='+data.imagen+'></img>' +
+				'<span class="flag-text">'+ data.text+"</span>"
+				);
+				return $country;
+		}else{
+			var $country = $(
+				'<span class="flag-text">'+ data.text+"</span>"
+				);
+				return $country;
+		}
+	};
+
+	$('[data-toggle="tooltip"]').tooltip()
+	$('.parsley-validation').parsley();
+	if( $(".gray-main-bg").length >= 1 ){
+		$(".navbar-nav").addClass("gray-menu")
+	}
+
+
+	$("#wishlist-carousel").owlCarousel({
+ 		navigation:true,
+	  	touchDrag:false,
+	  	mouseDrag:false,
+	  	navigationText:["",""],
+	  	pagination:false,
+
+  	});
+
+	//Select2
+	$('.js-data-example-ajax').select2({
+		placeholder: {
+			id: '-1', // the value of the option
+			text: 'Encuentra por color, artista y más...'
+		},
+		templateResult: formatCountry,
+		language: "es",
+		minimumInputLength: 2,
+		allowClear: true,
+		dropdownAutoWidth : 'true',
+		selectOnClose : 'true',
+		ajax:{
+			url:"{% url 'get_buscador' %}",
+			dataType:'json',
+			delay:250,
+			data: function (params) {
+				return {
+					q: params.term, // search term
+				};
+			},
+			processResults: function (data, params) {
+				return {
+					results: data,
+				};
+			},
+			escapeMarkup: function (markup) { return markup; },
+		}
+	});
+
+	$('.js-data-example-ajax').on("select2:select", function (e) {
+		var tipo = e.params.data['type']; // 1 => Diseño , 2 => Artista
+		var id = e.params.data['id'];
+		var nombre = e.params.data['text'];
+		var profile = e.params.data['profile_url'];
+		var slug = e.params.data['slug'];
+
+		if(tipo==2)
+			window.location.href = '/usuario/perfil/'+profile+'/?pub=1';
+		else
+			window.location.href = '/diseno/'+slug+'/';
+
+	});
+})
+
+</script>
+</body>
+</html>

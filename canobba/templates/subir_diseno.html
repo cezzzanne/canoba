@@ -1,0 +1,372 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block extra_head %}
+	<style>
+		.file-preview {
+			width: 100px;
+			height: 100px;
+			background-size: cover;
+			background-repeat: no-repeat;
+			border: 1px solid #ccc;
+			border-radius: 3px;
+			background-position: center;
+		}
+	</style>	
+{% endblock extra_head %}
+
+{% block contenido %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h4><a href="{% url 'ver_perfil' disenador.profile_url %}">Perfil del Diseñador</a> / <b>Subir Diseños</b></h4>
+				<hr>
+			</div>
+		</div>
+		<form class="form-horizontal" action="." method="POST" enctype="multipart/form-data">
+			{% csrf_token %}
+			<div class="row">
+				<div class="form-group">
+					<label for="id-nombre" class="col-sm-2 control-label">Nombre</label>
+					<div class="col-sm-10">
+						<input class="form-control" type="text" id="id-nombre" name="nombre" placeholder="Nombre" value="{{ diseno.nombre }}" required>
+					</div>
+				</div>
+				<div class="wrap">
+					<!--
+					<div class="form-group">
+						<label for="id-coleccion" class="col-sm-2 control-label">Colección</label>
+						<div class="col-sm-10">
+							<select class="form-control" name="coleccion" id="id-coleccion">
+								{% for coleccion in colecciones %}
+									<option value="{{ coleccion.id }}">{{ coleccion.nombre }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					-->
+					{% for dis_cat in diseno.categorias.all %}
+						{% if forloop.counter == 1 %}
+							<div class="form-group">
+								<label for="id-coleccion" class="col-sm-2 control-label">Colección</label>
+								<div class="wrap2">
+									<div class="col-sm-9">
+										<select class="form-control" name="coleccion" id="id-coleccion">
+											{% for coleccion in colecciones %}
+												<option value="{{ coleccion.id }}"{% if dis_cat.coleccion.id == coleccion.id %}selected{% endif %}>{{ coleccion.nombre }}</option>
+											{% endfor %}
+										</select>
+									</div>
+								</div>
+							</div>
+						{% else %}
+							<div class="form-group">
+								<div class='col-sm-2'></div>
+								<div class="wrap2">
+									<div class="col-sm-9">
+										<select class="form-control" name="coleccion" id="id-coleccion">
+											{% for coleccion in colecciones %}
+												<option value="{{ coleccion.id }}"{% if dis_cat.coleccion.id == coleccion.id %}selected{% endif %}>{{ coleccion.nombre }}</option>
+											{% endfor %}
+										</select>
+									</div>
+								</div>
+								<div class="col-sm-1">
+									<a href='#' class='remove-field'><i class='glyphicon glyphicon-remove text-danger'></i></a>
+								</div>
+							</div>
+						{% endif %}
+					{% empty %}
+						<div class="form-group">
+							<label for="id-coleccion" class="col-sm-2 control-label">Colección</label>
+							<div class="wrap2">
+								<div class="col-sm-9">
+									<select class="form-control" name="coleccion" id="id-coleccion">
+										{% for coleccion in colecciones %}
+											<option value="{{ coleccion.id }}">{{ coleccion.nombre }}</option>
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2"></div>
+					<a href="#" id="add" class="col-sm-2 text-success">Agregar otro +</a>
+					<div class="col-sm-8"></div>
+				</div>
+				<div class="form-group">
+					<label for="id-descripcion" class="col-sm-2 control-label">Descripción</label>
+					<div class="col-sm-10">
+						<textarea class="form-control" rows="3" name="descripcion" id="id-descripcion" placeholder="Descripción">{{ diseno.descripcion|default:"Descripción"|striptags }}</textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="id-etiqueta" class="col-sm-2 control-label">Etiquetas</label>
+					<div class="col-sm-10">
+						<input class="form-control" type="text" id="id-etiqueta" name="etiqueta" placeholder="etiqueta, etiqueta,..." value="{% if diseno.id %}{% for tag in diseno.tags.all %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="id-imagenp" class="col-sm-2 control-label">Imagen Principal</label>
+					<div class="col-sm-10">
+						<input type="text" id="file-name0" style="width:300px" value="{{ diseno.imagen|default:"" }}" disabled>
+						<div style="position:relative; display: inline-block; padding: 10px;">
+							<i class="glyphicon glyphicon-search"></i>
+							<input data-num="0" type="file" id="id-imagenp" name="img_principal" accept="image/*" style="position: absolute;opacity: 0;width: 100%;height: 100%;cursor: pointer; top: 0; left: 0;" {% if not diseno.imagen %}required{% endif %}>
+						</div>
+    					<p class="help-block">Tamaño recomendado 300x350</p>
+    					<div class="file-preview" style='background-image:url("{{ diseno.imagen.url }}");'></div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="id-imagenph" class="col-sm-2 control-label">Imagen Principal Horizontal</label>
+					<div class="col-sm-10">
+						<input type="text" id="file-name1" style="width:300px" value="{{ diseno.img_horizontal|default:"" }}" disabled>
+						<div style="position:relative; display: inline-block; padding: 10px;">
+							<i class="glyphicon glyphicon-search"></i>
+							<input data-num="1" type="file" id="id-imagenph" name="img_principal_h" accept="image/*" style="position: absolute;opacity: 0;width: 100%;height: 100%;cursor: pointer; top: 0; left: 0;" {% if not diseno.img_horizontal %}required{% endif %}>
+						</div>
+    					<p class="help-block">Tamaño recomendado 200x120</p>
+    					<div class="file-preview" style='background-image:url("{{ diseno.img_horizontal.url }}");'></div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="id-imagenpv" class="col-sm-2 control-label">Imagen Principal Vertical</label>
+					<div class="col-sm-10">
+						<input type="text" id="file-name2" style="width:300px" value="{{ diseno.img_vertical|default:"" }}" disabled>
+						<div style="position:relative; display: inline-block; padding: 10px;">
+							<i class="glyphicon glyphicon-search"></i>
+							<input data-num="2" type="file" id="id-imagenpv" name="img_principal_v" accept="image/*" style="position: absolute;opacity: 0;width: 100%;height: 100%;cursor: pointer; top: 0; left: 0;" {% if not diseno.img_vertical %}required{% endif %}>
+						</div>
+    					<p class="help-block">Tamaño recomendado 120x200</p>
+    					<div class="file-preview" style='background-image:url("{{ diseno.img_vertical.url }}");'></div>
+					</div>
+				</div>
+			</div>
+		
+			<div class="row">
+				<h4 style="text-align:center; font-weight:bold;">Tamaños</h4>
+			</div>
+			<div class="row">
+				<h4 style="text-align:center; color:#FFF; background-color: #605C5C; padding:15px;">
+				Para garantizar una óptima calidad de impresión, solo estarán disponibles para la venta los tamaños que cargues y publiques a continuación:
+				</h4>
+			</div>
+			<div class="row">
+				<h4 style="text-align:center; background-color: #DADADC; padding:6px;">
+				Horizontal
+				</h4>
+			</div>
+			<!-- tabla horizontal-->
+			<div class="row">
+				<table class="disenos-table" width="100%">
+					<thead>
+						<tr style="border: solid 2px #13DFAE;">
+							<th>Tamaño de Impresión</th>
+							<th width="60%">Imagen</th>
+							<th>Proporción</th>
+						</tr>
+					</thead>
+					<tbody>
+							<tr>
+								<td>
+									200cm x 120cm
+								</td>
+								<td>
+									<input type="text" id="file-name3" style="width:300px" value="{{ lista.7.imagen.name }}" disabled>
+									<div style="position:relative; display: inline-block; padding: 10px;">
+										<i class="glyphicon glyphicon-search"></i>
+										<input data-num="3" type="file" id="id-imagen200x120" name="img_principal_200x120" accept="image/*" style="position: absolute;opacity: 0;width: 100%;height: 100%;cursor: pointer; top: 0; left: 0;">
+									</div>
+								</td>
+								<td>
+									<img src="{% static 'img/prop_200x120.jpg' %}">
+								</td>
+							</tr>
+							<tr>
+								<td>
+									100cm x 100cm
+								</td>
+								<td>
+									<input type="text" id="file-name4" style="width:300px" value="{{ lista.4.imagen.name }}" disabled>
+									<div style="position:relative; display: inline-block; padding: 10px;">
+										<i class="glyphicon glyphicon-search"></i>
+										<input data-num="4" type="file" id="id-imagen100x100" name="img_principal_100x100" accept="image/*" style="position: absolute;opacity: 0;width: 100%;height: 100%;cursor: pointer; top: 0; left: 0;">
+									</div>
+								</td>
+								<td>
+									<img src="{% static 'img/prop_100x100.jpg' %}">
+								</td>
+							</tr>
+							<tr>
+								<td>
+									70cm x 70cm
+								</td>
+								<td>
+									<input type="text" id="file-name5" style="width:300px" value="{{ lista.2.imagen.name }}" disabled>
+									<div style="position:relative; display: inline-block; padding: 10px;">
+										<i class="glyphicon glyphicon-search"></i>
+										<input data-num="5" type="file" id="id-imagen70x70" name="img_principal_70x70" accept="image/*" style="position: absolute;opacity: 0;width: 100%;height: 100%;cursor: pointer; top: 0; left: 0;">
+									</div>
+								</td>
+								<td>
+									<img src="{% static 'img/prop_70x70.jpg' %}">
+								</td>
+							</tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- end tabla horizontal -->
+
+			<div class="row">
+				<h4 style="text-align:center; background-color: #DADADC; padding:6px;">
+				Vertical
+				</h4>
+			</div>
+			<!-- tabla vertical-->
+			<div class="row">
+				<table class="disenos-table" width="100%">
+					<thead>
+						<tr style="border: solid 2px #13DFAE;">
+							<th>Tamaño de Impresión</th>
+							<th width="60%">Imagen</th>
+							<th>Proporción</th>
+						</tr>
+					</thead>
+					<tbody>
+							<tr>
+								<td>
+									115cm x 180cm
+								</td>
+								<td>
+									<input type="text" id="file-name6" style="width:300px" value="{{ lista.6.imagen.name }}" disabled>
+									<div style="position:relative; display: inline-block; padding: 10px;">
+										<i class="glyphicon glyphicon-search"></i>
+										<input data-num="6" type="file" id="id-imagen115x180" name="img_principal_115x180" accept="image/*" style="position: absolute;opacity: 0;width: 100%;height: 100%;cursor: pointer; top: 0; left: 0;">
+									</div>
+								</td>
+								<td>
+									<img src="{% static 'img/prop_115x180.jpg' %}">
+								</td>
+							</tr>
+							<tr>
+								<td>
+									100cm x 150cm
+								</td>
+								<td>
+									<input type="text" id="file-name7" style="width:300px" value="{{ lista.5.imagen.name }}" disabled>
+									<div style="position:relative; display: inline-block; padding: 10px;">
+										<i class="glyphicon glyphicon-search"></i>
+										<input data-num="7" type="file" id="id-imagen100x150" name="img_principal_100x150" accept="image/*" style="position: absolute;opacity: 0;width: 100%;height: 100%;cursor: pointer; top: 0; left: 0;">
+									</div>
+								</td>
+								<td>
+									<img src="{% static 'img/prop_100x150.jpg' %}">
+								</td>
+							</tr>
+							<tr>
+								<td>
+									80cm x 120cm
+								</td>
+								<td>
+									<input type="text" id="file-name8" style="width:300px" value="{{ lista.3.imagen.name }}" disabled>
+									<div style="position:relative; display: inline-block; padding: 10px;">
+										<i class="glyphicon glyphicon-search"></i>
+										<input data-num="8" type="file" id="id-imagen80x120" name="img_principal_80x120" accept="image/*" style="position: absolute;opacity: 0;width: 100%;height: 100%;cursor: pointer; top: 0; left: 0;">
+									</div>
+								</td>
+								<td>
+									<img src="{% static 'img/prop_80x120.jpg' %}">
+								</td>
+							</tr>
+							<tr>
+								<td>
+									60cm x 90cm
+								</td>
+								<td>
+									<input type="text" id="file-name9" style="width:300px" value="{{ lista.1.imagen.name }}" disabled>
+									<div style="position:relative; display: inline-block; padding: 10px;">
+										<i class="glyphicon glyphicon-search"></i>
+										<input data-num="9" type="file" id="id-imagen60x90" name="img_principal_60x90" accept="image/*" style="position: absolute;opacity: 0;width: 100%;height: 100%;cursor: pointer; top: 0; left: 0;">
+									</div>
+								</td>
+								<td>
+									<img src="{% static 'img/prop_60x90.jpg' %}">
+								</td>
+							</tr>
+							<tr>
+								<td>
+									50cm x 60cm
+								</td>
+								<td>
+									<input type="text" id="file-name10" style="width:300px" value="{{ lista.0.imagen.name }}" disabled>
+									<div style="position:relative; display: inline-block; padding: 10px;">
+										<i class="glyphicon glyphicon-search"></i>
+										<input data-num="10" type="file" id="id-imagen50x60" name="img_principal_50x60" accept="image/*" style="position: absolute;opacity: 0;width: 100%;height: 100%;cursor: pointer; top: 0; left: 0;">
+									</div>
+								</td>
+								<td>
+									<img src="{% static 'img/prop_50x60.jpg' %}">
+								</td>
+							</tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- end tabla vertical -->
+			<div class="row" align="center">
+				<input type="submit" value="PUBLICAR" style="color: #13dfae; background-color: #1e1e1e; border: none; padding: 7px 40px; font-size: 18px;">
+			</div>
+		</form>
+	</div>
+{% endblock contenido %}
+
+{% block js %}
+	<script>
+	$(document).ready(function(){
+		//Mostrar el thumbnail de la imagen en el div.
+		$('input[type=file]').change(function(e) {
+	        if(typeof FileReader == "undefined") return true;
+	        var elem = $(this);
+	        var files = e.target.files;
+	        $("#file-name"+$(this).data('num')).val($(this).val());
+	        for (var i = 0, f; f = files[i]; i++) {
+	            if (f.type.match('image.*')) {
+	                var reader = new FileReader();
+	                reader.onload = (function(theFile) {
+	                    return function(e) {
+	                        var image = e.target.result;
+	                        previewDiv = $('.file-preview', elem.parent().parent());
+	                        bg_width = previewDiv.width() * 2;
+	                        previewDiv.css({
+	                            "background-image":"url("+image+")",
+	                        });
+	                    };
+	                })(f);
+	                reader.readAsDataURL(f);
+	            }
+	        }
+	    });
+
+		//Agregar filas al formset.
+	    $("#add").click(function(e) {
+	    	e.preventDefault();
+	    	out = "<div class='form-group'>";
+	    	out += "<div class='col-sm-2'></div>";
+	    	out += $(".wrap > .form-group > .wrap2").html();
+	    	out += "<div class='col-sm-1'>";
+			out += "<a href='#' class='remove-field'><i class='glyphicon glyphicon-remove text-danger'></i></a>";
+			out += "</div>";
+	    	out += "</div>";
+	    	$(".wrap").append(out);
+	    });
+
+	    //Quitar filas del formset.
+	    $(".wrap").on('click', '.remove-field',function(e){
+	    	e.preventDefault();
+	    	$(this).closest(".form-group").remove();
+	    });
+	});
+	</script>
+{% endblock js %}

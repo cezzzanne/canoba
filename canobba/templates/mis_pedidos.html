@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block contenido %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-10 col-md-offset-1">
+				<h1 class="upper" align="center">Mis Pedidos</h1>
+				{% if pedidos %}
+					
+				<table class="table table-hover" style="margin:20px 0">
+					<thead>
+						<th align="center" width="90px">No.Pedido</th>
+						<th>Fecha</th>
+						<th class="text-right">Total</th>
+						<th class="text-center">Status</th>
+					</thead>
+					<tbody>
+						{% for pedido in pedidos %}
+						<tr onclick="window.location.href='{% url 'detalle_pedido' pedido.id %}'">
+							<td align="center">{{ pedido.folio }}</td>
+							<td>{{ pedido.fecha|date:"d/M/Y" }}</td>
+							<td class="money-fmt">{{ pedido.get_total }}</td>
+							<td class="text-center">
+								<span class="label label-{{ pedido.get_status_css }}" style="font-size:14px">{{ pedido.get_status_display }}</span>
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				{% else %}
+				<div class="empty-cart-message">
+					<h3 align="center" style="margin:0;">No haz solicitado ningún pedido.</h3>
+				</div>
+				{% endif %}
+
+			</div>
+		</div>
+	</div>
+{% endblock contenido %}
