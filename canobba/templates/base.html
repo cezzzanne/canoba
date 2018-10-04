@@ -139,8 +139,9 @@
 							<p>
 								{% if user.is_authenticated %}
 								<!-- ERROR -->
-
-									<a {% if user.tipo == 2 %}href="{% url 'ver_perfil' user.id %}"{% else %}href="{% url 'ver_perfil' user.id %}"{% endif %}>Bienvenido(a), {{ user.usario }}</a>
+								{% if user.usuario.tipo == 2 %}
+									<a {% if user.tipo == 2 %}href="{% url 'ver_perfil' user.usuario.profile_url %}"{% else %}href="{% url 'ver_perfil' user.usuario.profile_url %}"{% endif %}>Bienvenido(a), {{ user.usario.nombre }}</a>
+									{% endif %}
 									<a href="{% url 'recover_pass' %}">Cambiar Contraseña</a>
 									<a href="{% url 'mis_pedidos' %}">Mis Pedidos</a>
 									<a href="{% url 'logout_user' %}">Salir</a>

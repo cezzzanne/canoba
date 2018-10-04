@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'canobba',
     'blog',
     'carton',
+    'filebrowser',
 ]
 SITE_ID = 1
 

@@ -13,7 +13,6 @@ from django.contrib.auth.decorators import login_required
 
 SENDER_EMAIL = 'hola@canobba.com'
 # RECEIVER = 'adda@canobba.com'
-RECEIVER = 'carranzamario26@gmail.com'
 
 def login_form(request):
 	vars = {"title":"Login"}
@@ -252,7 +251,7 @@ def contacto(request):
 		from django.template.loader import render_to_string
 		from django.template import Context
 
-		subject, from_email, to = 'Nuevo contacto Canobba', 'Contacto Canobba <'+ SENDER_EMAIL+'>', RECEIVER
+		subject, from_email, to = 'Nuevo contacto Canobba', 'Contacto Canobba <'+ SENDER_EMAIL+'>', request.POST['email']
 		context = "<p style='color:#434343'>Contacto<br>"
 		context += "informacion del contacto:.<br>"
 		context += u"Nombre: " + request.POST.get('nombre') + "<br>"
@@ -837,8 +836,7 @@ def ver_perfil(request, profile):
 	from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 	try:
-		user = User.objects.get(id=profile)
-		disenador = user.usuario
+		disenador = Usuario.objects.get(profile_url=profile)
 		dis = disenador.disenos.all()
 		wish = WishlistDetalle.objects.filter(usuario__profile_url=profile)
 
@@ -855,6 +853,7 @@ def ver_perfil(request, profile):
 
 		vars = {
 			"title":"Perfil de " + disenador.nombre,
+			"user": user,
 			"disenador":disenador,
 			"disenos":disenos,
 			"favoritos":len(wish),
@@ -1059,8 +1058,9 @@ def subir_diseno(request, profile, dis=None):
 	colecciones = Coleccion.objects.all()
 	# TODO: Error is here
 	try:
-		disenador = Usuario.objects.get(profile_url=profile)
-		if request.user != disenador:
+		user = User.objects.get(id=profile)
+		disenador = user.usuario
+		if request.user != user:
 			messages.add_message(request, messages.ERROR, U"Ingresar al sistema para subir un diseño.")
 			return redirect("home")
 	except:
@@ -1273,7 +1273,7 @@ def subir_diseno(request, profile, dis=None):
 		from django.template.loader import render_to_string
 		from django.template import Context
 
-		subject, from_email, to = u'Diseño aprobado','Canobba <hola@canobba.com>', RECEIVER
+		subject, from_email, to = u'Diseño aprobado','Canobba <hola@canobba.com>', diseno.usuario.email
 		context = "<p style='color:#434343'>Prueba<br>"
 		context += "Texto de prueba.<br>"
 		context += u"<h5 align='center'>Correo al usuario cuando se aprueba su diseño</h5><br>"
@@ -1287,7 +1287,7 @@ def subir_diseno(request, profile, dis=None):
 		msg.send()
 
 		messages.add_message(request, messages.SUCCESS, U"Diseño publicado correctamente.")
-		return redirect("ver_perfil", disenador.profile_url)
+		return redirect("ver_perfil", user.id)
 
 	lista = []
 	for im in range(0,8):

@@ -69,7 +69,8 @@
 					<img src="{{ im.url }}" class="img-responsive circle-avatar" alt="">
 			</div>
 			<div class="col-md-3">
-				<h2 style="color: #575757;font-weight: bold;">{{ disenador.nombre }}&nbsp;{{ disenador.apellidos }}</h2>
+				<h2 style="color: #575757;font-weight: bold;">{{ disenador.nombre }}&nbsp;{{ disenador.apellidos }} </h2>
+				<h4 style="color: #575757;font-weight: bold;"> <a href="{% url 'subir_diseno' user.id %}">Agregar Diseño</a> </h4>
 				<div class="container-followers">
 					<h5 class="nomargin">{{ disenador.get_followers }}</h5> <span>Seguidores</span>
 				</div>
